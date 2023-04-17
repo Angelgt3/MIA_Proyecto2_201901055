@@ -1,0 +1,10 @@
+#"/home/angel/Escritorio/MIA/Semestre3/[MIA]Proyecto2_201901055/Backend/entrada.eea"
+
+#CREACION DE DISCOS
+mkdisk >size=50 >unit=M >path="/home/archivos/Disco1.dsk" >fit=ff
+mkdisk >unit=k >size=51200 >path=/home/archivos/Disco2.dsk >fit=bf
+mkDisk >size=10 >path=/home/archivos/Disco3.dsk
+mkdisk >size=51200 >path="/home/archivos/mis archivos/Disco4.dsk" >unit=K
+mkDisk >size=20 >path="/home/archivos/mis archivos/Disco5.dsk" >unit=M >fit=WF
+
+
