@@ -2,10 +2,14 @@
 # mi app no acepta rutas con comillas
 
 #CREACION DE DISCOS
-mkdisk >size=10 >unit=M >path=/home/archivos/Disco1.dsk >fit=ff
+mkdisk >size=10 >unit=M  >fit=ff >path=/home/archivos/Disco1.dsk
 mkdisk >unit=k >size=1000 >path=/home/archivos/Disco2.dsk >fit=bf
 mkDisk >size=10 >path=/home/archivos/Disco3.dsk >fit=bf
-mkdisk >size=51200 >path=/home/archivos/mis archivos/Disco4.dsk >unit=K
+mkdisk >unit=K >size=51200 >path=/home/archivos/mis archivos/Disco4.dsk 
 mkDisk >size=20 >path=/home/archivos/mis archivos/Disco5.dsk >unit=M >fit=WF
 
+#ELIMINACION DE DISCOS
+Rmdisk >path=/home/archivos/Disco2.dsk
+rmDisk >path=/home/archivos/Disco3.dsk
+rmdisk >path=/home/archivos/mis archivos/Disco4.dsk
 

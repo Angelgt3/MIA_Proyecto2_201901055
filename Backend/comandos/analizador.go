@@ -48,7 +48,7 @@ func ejecutar_script(comando [15]string) {
 	//fmt.Println("comando:" + comando[0])
 	if comando[0] == "mkdisk" { //MKDISK-ANALIZADOR
 		var size int = 0
-		var path string
+		var path string = ""
 		var fit string = "ff"
 		var unit string = "m"
 		for i := 1; i < 15; i++ {
@@ -65,7 +65,9 @@ func ejecutar_script(comando [15]string) {
 				fit = part[1]
 			}
 			if part[0] == "path" {
-				path = part[1]
+				if path == "" {
+					path = part[1]
+				}
 			}
 			if part[0] == "unit" {
 				unit = part[1]
@@ -73,5 +75,21 @@ func ejecutar_script(comando [15]string) {
 
 		}
 		mkdisk(path, size, fit, unit)
+	}
+	if comando[0] == "rmdisk" { //RMDISK-ANALIZADOR
+		var path string = ""
+		for i := 1; i < 15; i++ {
+			if comando[i] == "" {
+				break
+			}
+			part := strings.Split(string(comando[i]), "=")
+			if part[0] == "path" {
+				if path == "" {
+					path = part[1]
+				}
+			}
+		}
+		fmt.Println(path)
+		rmdisk(path)
 	}
 }
