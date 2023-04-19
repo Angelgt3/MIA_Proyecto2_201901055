@@ -1,0 +1,35 @@
+<!-- Panel - Inicial  -->
+<div id="panel_inicial">
+
+</div>
+<!-- Panel - Contenido  -->
+<div id="panel_contenido">
+    <!-- Dentro del panel input boton  -->
+    <div id="panel_opciones">
+        <!-- imput - Cargar archivo  -->
+        <mat-form-field class="input_url">
+            <mat-label>Ingrese la url del archivo que se desea ejecutar</mat-label>
+            <input matInput type="text" [(ngModel)]="path">
+        </mat-form-field>
+    </div>
+    <!-- Boton - Cargar archivo  -->
+    <div id="boton_cargar">
+        <button mat-fab  class="boton_redondo" (click)="compilar()">
+            <mat-icon>play_arrow</mat-icon>
+        </button>
+    </div>
+    <!-- EDITOR -->
+    <div id="editor">
+        <textarea  name="description" rows="25" cols="80"  [(ngModel)]="code" > </textarea>
+    </div>
+    <!-- Consola -->
+    <div id="consola">
+        <textarea  name="description" rows="25" cols="80" > </textarea>
+    </div>
+</div>
+
+
+
+
+
+  
