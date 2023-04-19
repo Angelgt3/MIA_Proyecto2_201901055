@@ -48,9 +48,7 @@ func ejecutar_script(comando [15]string) {
 	//fmt.Println("comando:" + comando[0])
 	if comando[0] == "mkdisk" { //MKDISK-ANALIZADOR
 		var size int = 0
-		var path string = ""
-		var fit string = "ff"
-		var unit string = "m"
+		var path, fit, unit string = "", "ff", "m"
 		for i := 1; i < 15; i++ {
 			if comando[i] == "" {
 				break
@@ -60,23 +58,19 @@ func ejecutar_script(comando [15]string) {
 			//fmt.Println(part[1])
 			if part[0] == "size" {
 				size, _ = strconv.Atoi(part[1])
-			}
-			if part[0] == "fit" {
+			} else if part[0] == "fit" {
 				fit = part[1]
-			}
-			if part[0] == "path" {
+			} else if part[0] == "path" {
 				if path == "" {
 					path = part[1]
 				}
-			}
-			if part[0] == "unit" {
+			} else if part[0] == "unit" {
 				unit = part[1]
 			}
 
 		}
 		mkdisk(path, size, fit, unit)
-	}
-	if comando[0] == "rmdisk" { //RMDISK-ANALIZADOR
+	} else if comando[0] == "rmdisk" { //RMDISK-ANALIZADOR
 		var path string = ""
 		for i := 1; i < 15; i++ {
 			if comando[i] == "" {
@@ -89,7 +83,73 @@ func ejecutar_script(comando [15]string) {
 				}
 			}
 		}
-		fmt.Println(path)
 		rmdisk(path)
+	} else if comando[0] == "fdisk" { //FDISK-ANALIZADOR
+		var path, unit, typee, fit, name string = "", "k", "p", "wf", ""
+		var size int = 0
+		for i := 1; i < 15; i++ {
+			if comando[i] == "" {
+				break
+			}
+			part := strings.Split(string(comando[i]), "=")
+			if part[0] == "path" {
+				if path == "" {
+					path = part[1]
+				}
+			} else if part[0] == "size" {
+				size, _ = strconv.Atoi(part[1])
+			} else if part[0] == "unit" {
+				unit = part[1]
+			} else if part[0] == "type" {
+				typee = part[1]
+			} else if part[0] == "fit" {
+				fit = part[1]
+			} else if part[0] == "name" {
+				if name == "" {
+					name = part[1]
+				}
+			}
+		}
+		fdisk(size, unit, path, typee, fit, name)
+	} else if comando[0] == "mount" { //MOUNT-ANALIZADOR
+		var path, name string = "", ""
+		for i := 1; i < 15; i++ {
+			if comando[i] == "" {
+				break
+			}
+			part := strings.Split(string(comando[i]), "=")
+			if part[0] == "path" {
+				if path == "" {
+					path = part[1]
+				}
+			} else if part[0] == "name" {
+				if name == "" {
+					name = part[1]
+				}
+			}
+		}
+		Mount(path, name)
+	} else if comando[0] == "rep" { //REP-ANALIZADOR
+		var path, name, id, ruta string = "", "", "", ""
+		for i := 1; i < 15; i++ {
+			if comando[i] == "" {
+				break
+			}
+			part := strings.Split(string(comando[i]), "=")
+			if part[0] == "path" {
+				if path == "" {
+					path = part[1]
+				}
+			} else if part[0] == "name" {
+				if name == "" {
+					name = part[1]
+				}
+			} else if part[0] == "id" {
+				id = part[1]
+			} else if part[0] == "ruta" {
+				ruta = part[1]
+			}
+		}
+		Crear_reporte(name, path, id, ruta)
 	}
 }

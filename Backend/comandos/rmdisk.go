@@ -7,22 +7,32 @@ import (
 
 func rmdisk(path string) {
 	//verificar si el archivo existe
-	//fmt.Println(path)
+	//fmt.Println("path: " + path)
 	if !archivoExiste(path) {
 		fmt.Println("ERROR: NO EXISTE LA RUTA")
 		return
 	}
 	// confirmacion de eliminar
-	var input string
-	fmt.Println("DESEA ELIMINAR EL DISCO: " + path + "? (S/N)")
-	fmt.Scanln(&input)
-	if input == "S" || input == "s" {
-		err := os.Remove(path) // elimina el archivo
-		if err != nil {
-			fmt.Printf("ERROR AL ELIMINAR EL ARCHIVO %v\n", err)
-			return
+	/*
+		var input string
+		fmt.Println("DESEA ELIMINAR EL DISCO: " + path + "? (S/N)")
+		fmt.Scanln(&input)
+		if input == "S" || input == "s" {
+			err := os.Remove(path) // elimina el archivo
+			if err != nil {
+				fmt.Printf("ERROR AL ELIMINAR EL ARCHIVO %v\n", err)
+				return
+			}
 		}
+	*/
+
+	//remover sin confirmacion
+	err := os.Remove(path) // elimina el archivo
+	if err != nil {
+		fmt.Printf("ERROR AL ELIMINAR EL ARCHIVO %v\n", err)
+		return
 	}
+	fmt.Println("SE ELIMINO EL DISCO: " + path)
 }
 
 func archivoExiste(ruta string) bool {

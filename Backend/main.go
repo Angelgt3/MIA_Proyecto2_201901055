@@ -43,7 +43,8 @@ func ejecutar(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(string(cont))
 
 	//Analizar el archivo
-	//analizar()
+	//nombreArchivo := "/home/angel/Escritorio/MIA/Semestre3/[MIA]Proyecto2_201901055/MIA_Proyecto2_201901055/Backend/entrada.eea"
+	//comandos.Leer_archivo(nombreArchivo)
 
 	//Escribo el json para enviar
 	w.WriteHeader(http.StatusCreated)

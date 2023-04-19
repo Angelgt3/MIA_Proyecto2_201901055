@@ -70,7 +70,7 @@ func mkdisk(path string, size int, fit string, unit string) {
 	disco.Close()
 
 	//Creacion del mbr
-	tams := strconv.Itoa(tam)                       // size
+	tams := strconv.Itoa(tam * 1024)                // size
 	tim := time.Now().Format("2006-01-02 15:04:05") // fecha de creacion
 	ale := strconv.Itoa(rand.Intn(101))             // numero random de 0 a 100
 	ft := string(fit)                               // tipo de ajuste
