@@ -54,7 +54,7 @@ func Mount(path string, name string) {
 		num := 0
 		nn := 0
 		for i := 0; i < Tmontadas.Len(); i++ {
-			t := Tmontadas.GetValue(i).(Tlist)
+			t := Tmontadas.GetValue(i).(Disco)
 			// Revisa si esta ya montada
 			if name == strings.Split(string(t.Part.Part_name[:]), "\x00")[0] {
 				println("ERROR: PARTICION YA MONTADA")
@@ -85,4 +85,16 @@ func Mount(path string, name string) {
 	}
 	fmt.Println("SE MONTO LA PARTICION " + name + " CON ID: " + eslist.Id)
 
+}
+
+func Mostrar_mount() {
+	fmt.Println("-----------------------------PARTICIONES MONTADAS------------------------------")
+	fmt.Println("")
+	for i := 0; i < Tmontadas.Len(); i++ {
+		mon := Tmontadas.GetValue(i).(Disco)
+		fmt.Println(">id=" + mon.Id + " >path=" + mon.Path + " >name=" + mon.Name)
+	}
+	fmt.Println("")
+	fmt.Println("-------------------------------------------------------------------------------")
+	fmt.Println("")
 }

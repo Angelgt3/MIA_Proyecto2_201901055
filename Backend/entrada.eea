@@ -19,14 +19,13 @@ pausa
 #Debe_dar_error_por_que_no_existe_particion_extendida
 fdisk >type=L >unit=M >name=PartX >size=5 >path=/home/parte2/disco.dsk
 
-fdisk >type=P >unit=M >name=Part1 >size=25 >path=/home/parte2/disco.dsk
+fdisk >type=e >unit=M >name=Part1 >size=25 >path=/home/parte2/disco.dsk
 fdisk >type=P >unit=M >name=Part2 >size=25 >path=/home/parte2/disco.dsk
 fdisk >type=P >unit=M >name=Part3 >size=25 >path=/home/parte2/disco.dsk
-fdisk >type=E >unit=M >name=Part4 >size=25 >path=/home/parte2/disco.dsk
-fdisk >type=L >unit=M >name=Part5 >size=5 >path=/home/parte2/disco.dsk
-fdisk >type=L >unit=M >name=Part6 >size=5 >path=/home/parte2/disco.dsk
-
-pausa
+fdisk >type=p >unit=M >name=Part4 >size=25 >path=/home/parte2/disco.dsk
+fdisk >type=L >unit=m >name=Part5 >size=5 >path=/home/parte2/disco.dsk
+fdisk >type=L >unit=M >name=Part6 >size=4 >path=/home/parte2/disco.dsk
+fdisk >type=L >unit=m >name=Part7 >size=3 >path=/home/parte2/disco.dsk
 
 #MOUNT CARNET DE EJEMPLO 201901055
 #551a
@@ -36,4 +35,11 @@ mount >path=/home/parte2/disco.dsk >name=Part2
 #551c
 mount >path=/home/parte2/disco.dsk >name=Part3
 
-mount
+mount >mostrar
+
+rep >id=551a >path=/home/parte2/disco.jpg >name=disk
+
+mkfs >type=full >id=551a
+
+rep >id=551a >path=/home/parte2/sb.jpg >name=SB
+rep >id=551a >path=/home/parte2/tree.jpg >name=tree

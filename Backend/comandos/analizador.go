@@ -112,7 +112,7 @@ func ejecutar_script(comando [15]string) {
 		}
 		fdisk(size, unit, path, typee, fit, name)
 	} else if comando[0] == "mount" { //MOUNT-ANALIZADOR
-		var path, name string = "", ""
+		var path, name, mostrar string = "", "", ""
 		for i := 1; i < 15; i++ {
 			if comando[i] == "" {
 				break
@@ -126,9 +126,19 @@ func ejecutar_script(comando [15]string) {
 				if name == "" {
 					name = part[1]
 				}
+			} else if part[0] == "mostrar" {
+				if name == "" {
+					mostrar = "!"
+				}
 			}
+
 		}
-		Mount(path, name)
+		if mostrar == "!" {
+			Mostrar_mount()
+		} else {
+			Mount(path, name)
+		}
+
 	} else if comando[0] == "rep" { //REP-ANALIZADOR
 		var path, name, id, ruta string = "", "", "", ""
 		for i := 1; i < 15; i++ {
@@ -151,5 +161,23 @@ func ejecutar_script(comando [15]string) {
 			}
 		}
 		Crear_reporte(name, path, id, ruta)
+	} else if comando[0] == "mkfs" { //MKFS-ANALIZADOR
+		var id, typee string = "", ""
+		for i := 1; i < 15; i++ {
+			if comando[i] == "" {
+				break
+			}
+			part := strings.Split(string(comando[i]), "=")
+			if part[0] == "id" {
+				if id == "" {
+					id = part[1]
+				}
+			} else if part[0] == "type" {
+				if typee == "" {
+					typee = part[1]
+				}
+			}
+		}
+		mkfs(id, typee)
 	}
 }
