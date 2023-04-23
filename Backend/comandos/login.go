@@ -18,7 +18,7 @@ func Login(user string, pass string, id string) {
 		return
 	}
 	contenidoUser := leer_archivo(1, mont)
-	registros := get_usuarios(contenidoUser)
+	registros := get_registros(contenidoUser)
 	for _, registro := range registros { //UID [0], TIPO [1], GRUPO [2], USUARIO [3], CONTRASEÑA [4]
 		if len(registro) == 5 && registro[3] == user && registro[4] == pass {
 			usuario_activo.Nombre = user

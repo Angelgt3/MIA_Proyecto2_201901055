@@ -101,7 +101,7 @@ func existe_montada(id string, part *Disco) bool {
 }
 
 // retorna todos los usuarios del users.txt
-func get_usuarios(usuarios string) [][]string {
+func get_registros(usuarios string) [][]string {
 	linea := strings.Split(string(usuarios), "\n")
 	todos := make([][]string, len(linea))
 	for i := 0; i < len(linea); i++ {

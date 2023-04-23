@@ -60,6 +60,16 @@ mkgrp >name=Archivos
 mkgrp >name=Arqui
 mkgrp >name=Compi2
 
+rmgrp >name=Compi2
+mkgrp >name=Arqui
+
+mkuser >user=user1 >grp=root >pwd=user1
+mkuser >user=user2 >grp=Compi2 >pwd=user2
+rmusr >user=user2
+mkuser >user=user3 >grp=Compi2 >pwd=user3
+
+
+
 pause
 
 

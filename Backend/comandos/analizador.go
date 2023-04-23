@@ -217,6 +217,56 @@ func ejecutar_script(comando [15]string) {
 			}
 		}
 		Mkgrp(name)
+	} else if comando[0] == "rmgrp" { //RMGRP-ANALIZADOR
+		var name string = ""
+		for i := 1; i < 15; i++ {
+			if comando[i] == "" {
+				break
+			}
+			part := strings.Split(string(comando[i]), "=")
+			if part[0] == "name" {
+				if name == "" {
+					name = part[1]
+				}
+			}
+		}
+		Rmgrp(name)
+	} else if comando[0] == "mkuser" { //MKUSER-ANALIZADOR
+		var user, pwd, grp string = "", "", ""
+		for i := 1; i < 15; i++ {
+			if comando[i] == "" {
+				break
+			}
+			part := strings.Split(string(comando[i]), "=")
+			if part[0] == "user" {
+				if user == "" {
+					user = part[1]
+				}
+			} else if part[0] == "pwd" {
+				if pwd == "" {
+					pwd = part[1]
+				}
+			} else if part[0] == "grp" {
+				if grp == "" {
+					grp = part[1]
+				}
+			}
+		}
+		Mkuser(user, pwd, grp)
+	} else if comando[0] == "rmusr" { //RMUSR-ANALIZADOR
+		var user string = ""
+		for i := 1; i < 15; i++ {
+			if comando[i] == "" {
+				break
+			}
+			part := strings.Split(string(comando[i]), "=")
+			if part[0] == "user" {
+				if user == "" {
+					user = part[1]
+				}
+			}
+		}
+		Rmusr(user)
 	} else if comando[0] == "mkdir" { //MKDIR-ANALIZADOR
 		var path string = ""
 		var r bool = false
