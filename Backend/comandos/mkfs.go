@@ -150,6 +150,7 @@ func ext2(particion Disco) {
 	copy(InoCarpetaRaiz.I_ctime[:], time.Now().Format("2006-01-02 15:04:05"))
 	copy(InoCarpetaRaiz.I_mtime[:], time.Now().Format("2006-01-02 15:04:05"))
 	copy(InoCarpetaRaiz.I_block[0:1], "0")
+	copy(InoCarpetaRaiz.I_perm[:], "664")
 
 	// se crea el bloque carpeta de la raiz
 	var carpetaRaiz = newCarpeta()
@@ -170,6 +171,7 @@ func ext2(particion Disco) {
 	copy(InoArchivoUser.I_ctime[:], time.Now().Format("2006-01-02 15:04:05"))
 	copy(InoArchivoUser.I_mtime[:], time.Now().Format("2006-01-02 15:04:05"))
 	copy(InoArchivoUser.I_block[0:1], "1")
+	copy(InoArchivoUser.I_perm[:], "664")
 
 	// bloque de archivo de users.txt
 	var archivoUser BLOQUE_ARCHIVO

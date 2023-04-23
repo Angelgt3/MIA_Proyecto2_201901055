@@ -5,7 +5,7 @@
 mkdisk >size=112 >unit=M >path=/home/parte2/disco.dsk
 mkdisk >size=1 >path=/home/parte2/eliminar.dsk
 
-#pausa
+#pause
 
 #ELIMINACION_DE_DISCOS
 #Debe_de_dar_error_por_que_no_existe_disco_con_ese_nombre
@@ -13,7 +13,7 @@ mkdisk >size=1 >path=/home/parte2/eliminar.dsk
 
 rmdisk>path=/home/parte2/eliminar.dsk
 
-pausa
+#pause
 
 #CREACION>DE>PARTICIONES
 #Debe_dar_error_por_que_no_existe_particion_extendida
@@ -41,5 +41,30 @@ rep >id=551a >path=/home/parte2/disco.jpg >name=disk
 
 mkfs >type=full >id=551a
 
+
+#pause
+
+#INICIO_DE_SESION
+#Debe_dar_error_porque_no_existe_el_usuario_roca
+login >pwd=567 >user=roca >id=551a
+
+#Debe_dar_error_porque_no_existe_usuario_logeado
+logout
+
+login >pwd=123 >user=root >id=551a
+
+#pause
+
+#CREACION_DE_GRUPOS
+mkgrp >name=Archivos
+mkgrp >name=Arqui
+mkgrp >name=Compi2
+
+pause
+
+
+
+#REPORTES
 rep >id=551a >path=/home/parte2/sb.jpg >name=SB
 rep >id=551a >path=/home/parte2/tree.jpg >name=tree
+#rep >id=551a >path=/home/parte2/users_1.txt >ruta=/users.txt >name=file

@@ -72,7 +72,7 @@ type TINODOS struct {
 	I_atime [10]byte //Última fecha en que se leyó el inodo sin modificarlo
 	I_ctime [10]byte //Fecha en la que se creó el inodo
 	I_mtime [10]byte //Última fecha en la que se modifica el inodo
-	I_block [16]byte //Array en los que los primeros 16 registros son bloques directos.
+	I_block [64]byte //Array en los que los primeros 16 registros son bloques directos. (4 byte por registro)
 	I_type  [1]byte  //Indica si es archivo o carpeta. 1 = ARCHIVO, 0=CARPETA
 	I_perm  [4]byte  //permisos
 }
@@ -88,4 +88,13 @@ type BLOQUE_CARPETA struct {
 
 type BLOQUE_ARCHIVO struct {
 	B_content [64]byte // array con el contenido del archivo
+}
+
+type USUARIO struct {
+	Uid     string
+	Gid     string
+	Nombre  string
+	Cont    string
+	Montada Disco
+	Logeado bool
 }

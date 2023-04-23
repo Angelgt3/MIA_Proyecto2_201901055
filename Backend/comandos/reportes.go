@@ -17,7 +17,14 @@ func Crear_reporte(name string, path string, id string, ruta string) {
 		Reporte_SB(id, path)
 	} else if name == "tree" {
 		Reporte_tree(id, path)
+	} else if name == "file" {
+		Reporte_file(path, ruta, id)
 	}
+}
+
+// reporte file
+func Reporte_file(path string, ruta string, id string) {
+
 }
 
 // reporte arbol
@@ -28,14 +35,14 @@ func Reporte_tree(id string, path string) {
 	inodo := get_inodo(0, disco) //se obtiene el indo raiz
 	contenido += recorrido_arbol(inodo, "/", disco, 0, 0)
 	contenido += "\n}"
-	fmt.Println(contenido)
 	crear_dot(contenido, path)
 }
 
 func recorrido_arbol(inodo TINODOS, nombre_inodo string, disco Disco, p_inodo int, p_bloque int) string {
 	contenido := ""
-	for i := 0; i < 16; i++ {
-		if string(inodo.I_block[i]) == "-" { //si el inodo no hat bloque se lo salta
+	for i := 0; i < 64; i = i + 4 {
+		inosta := strings.Split(string(inodo.I_block[i]), "\x00")
+		if inosta[0] == "-" { //si el inodo no hat bloque se lo salta
 			continue
 		}
 		//graphviz inodo
@@ -48,17 +55,17 @@ func recorrido_arbol(inodo TINODOS, nombre_inodo string, disco Disco, p_inodo in
 		contenido += "|{i_ctime|" + strings.Split(string(inodo.I_ctime[:]), "\x00")[0] + "}"
 		contenido += "|{i_mtime|" + strings.Split(string(inodo.I_mtime[:]), "\x00")[0] + "}"
 
-		for a := 0; a < 16; a++ {
+		for a := 0; a < 64; a = a + 4 {
 			contenido += "|{i_block[" + strconv.Itoa(a+1) + "]|"
-			contenido += string(inodo.I_block[a]) + "}"
+			contenido += strings.Split(string(inodo.I_block[a]), "\x00")[0] + "}"
 		}
 		contenido += "|{i_type|" + strings.Split(string(inodo.I_type[:]), "\x00")[0] + "}"
 		contenido += "|{i_perm|" + strings.Split(string(inodo.I_perm[:]), "\x00")[0] + "}\"\n\t];"
-		if string(inodo.I_block[i]) != "-" {
+		if inosta[0] != "-" {
 			if string(inodo.I_type[:]) == "0" { //es carpeta
-				inb, _ := strconv.Atoi(string(inodo.I_block[i]))
+				inb, _ := strconv.Atoi(inosta[0])
 				bc := get_bloque_carpeta(inb, disco)
-				contenido += "\n\tb" + string(inodo.I_block[i]) + "[\n\t\tlabel=\"Bloque " + string(inodo.I_block[i]) + " - Carpeta "
+				contenido += "\n\tb" + inosta[0] + "[\n\t\tlabel=\"Bloque " + inosta[0] + " - Carpeta "
 
 				for k := 0; k < 4; k++ {
 					contenido += "|{b_content " + strconv.Itoa(k) + "}|{b_name|"
@@ -67,22 +74,21 @@ func recorrido_arbol(inodo TINODOS, nombre_inodo string, disco Disco, p_inodo in
 				}
 				contenido += "\"\n\t];"
 				//conexiones inodo -> bloques
-				contenido += "\n\tinode" + strconv.Itoa(p_inodo) + "->b" + string(inodo.I_block[i])
+				contenido += "\n\tinode" + strconv.Itoa(p_inodo) + "->b" + inosta[0]
 				//ahora recorrer los inodos de los bloques
 				for a := 0; a < 4; a++ {
 					if strings.Split(string(bc.B_content[a].B_inodo[:]), "\x00")[0] != "-" && strings.Split(string(bc.B_content[a].B_inodo[:]), "\x00")[0] != "0" {
 						inbb, _ := strconv.Atoi(strings.Split(string(bc.B_content[a].B_inodo[:]), "\x00")[0])
-						inb, _ := strconv.Atoi(string(inodo.I_block[i]))
+						inb, _ := strconv.Atoi(inosta[0])
 						sig_inodo := get_inodo(inbb, disco)
-
-						contenido += "\n\tb" + string(inodo.I_block[i]) + "->inode" + strings.Split(string(bc.B_content[a].B_inodo[:]), "\x00")[0]
+						contenido += "\n\tb" + inosta[0] + "->inode" + strings.Split(string(bc.B_content[a].B_inodo[:]), "\x00")[0]
 						contenido += recorrido_arbol(sig_inodo, strings.Split(string(bc.B_content[a].B_name[:]), "\x00")[0], disco, inbb, inb)
 					}
 				}
 			} else if string(inodo.I_type[:]) == "1" { //es archivo
-				inb, _ := strconv.Atoi(string(inodo.I_block[i]))
+				inb, _ := strconv.Atoi(inosta[0])
 				ba := get_bloque_archivo(inb, disco)
-				contenido += "\n\tb" + string(inodo.I_block[i]) + "[\n\t\tlabel=\"Bloque " + string(inodo.I_block[i]) + " - Archivo |b_content|"
+				contenido += "\n\tb" + string(inosta[0]) + "[\n\t\tlabel=\"Bloque " + inosta[0] + " - Archivo |b_content|"
 				contenido += strings.Split(string(ba.B_content[:]), "\x00")[0]
 				contenido += "\"\n\t];"
 				//conexiones inodo -> bloques

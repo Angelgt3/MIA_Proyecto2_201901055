@@ -179,5 +179,65 @@ func ejecutar_script(comando [15]string) {
 			}
 		}
 		mkfs(id, typee)
+	} else if comando[0] == "login" { //LOGIN-ANALIZADOR
+		var user, pass, id string = "", "", ""
+		for i := 1; i < 15; i++ {
+			if comando[i] == "" {
+				break
+			}
+			part := strings.Split(string(comando[i]), "=")
+			if part[0] == "user" {
+				if user == "" {
+					user = part[1]
+				}
+			} else if part[0] == "pwd" {
+				if pass == "" {
+					pass = part[1]
+				}
+			} else if part[0] == "id" {
+				if id == "" {
+					id = part[1]
+				}
+			}
+		}
+		Login(user, pass, id)
+	} else if comando[0] == "logout" { //LOGOUT-ANALIZADOR
+		Logout()
+	} else if comando[0] == "mkgrp" { //MKGRP-ANALIZADOR
+		var name string = ""
+		for i := 1; i < 15; i++ {
+			if comando[i] == "" {
+				break
+			}
+			part := strings.Split(string(comando[i]), "=")
+			if part[0] == "name" {
+				if name == "" {
+					name = part[1]
+				}
+			}
+		}
+		Mkgrp(name)
+	} else if comando[0] == "mkdir" { //MKDIR-ANALIZADOR
+		var path string = ""
+		var r bool = false
+		for i := 1; i < 15; i++ {
+			if comando[i] == "" {
+				break
+			}
+			part := strings.Split(string(comando[i]), "=")
+			if part[0] == "path" {
+				if path == "" {
+					path = part[1]
+				}
+			} else if part[0] == "r" {
+				r = true
+			}
+		}
+		Mkdir(path, r)
+	} else if comando[0] == "pause" { //PAUSE-ANALIZADOR
+		fmt.Println(" PAUSA: Presione cualguien tecla para continuar")
+		pause := ""
+		fmt.Scanln(&pause)
+
 	}
 }
