@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // ------------------------------VARIABLES---------------------------------------------
@@ -63,8 +64,18 @@ func newCarpeta() BLOQUE_CARPETA {
 }
 
 // retorna la posicion para un nuevo bloque
-func newBloque(disco Disco) int {
+func new_index_bloque(disco Disco) int {
 	bm := get_bitmap(disco, false)
+	for i := 0; i < len(bm); i++ {
+		if bm[i] == '0' {
+			return i
+		}
+	}
+	return -1
+}
+
+func new_index_inodo(disco Disco) int {
+	bm := get_bitmap(disco, true)
 	for i := 0; i < len(bm); i++ {
 		if bm[i] == '0' {
 			return i
@@ -113,6 +124,21 @@ func get_registros(usuarios string) [][]string {
 		}
 	}
 	return todos
+}
+
+// retorna el indice de las carpetas
+func Indices_BC(inodo TINODOS, disco Disco) []int {
+	apuntadores := make([]int, 0)
+	if inodo.I_type[0] == '0' {
+		for i := 0; i < 64; i = i + 4 {
+			inosta := strings.Split(string(inodo.I_block[i:i+3]), "\x00")
+			if inosta[0] != "-" {
+				apunt, _ := strconv.Atoi(inosta[0])
+				apuntadores = append(apuntadores, apunt)
+			}
+		}
+	}
+	return apuntadores
 }
 
 // escribe inodo en el disco por medio de su index
@@ -250,6 +276,50 @@ func escribir_BA(bloque BLOQUE_ARCHIVO, index int, disco Disco) {
 	archivo.Close()
 }
 
+// escribe el bloque carpeta en el archivo disco
+func escribir_BC(bloque BLOQUE_CARPETA, index int, disco Disco) {
+	archivo, err := os.OpenFile(disco.Path, os.O_RDWR, 0660)
+	if err != nil {
+		fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO")
+	}
+	Pstart := strings.Split(string(disco.Part.Part_start[:]), "\x00")
+	Ps, _ := strconv.Atoi(Pstart[0])
+	archivo.Seek(int64(Ps), 0)
+	var sb SUPER_BLOQUE
+	rre := binary.Read(archivo, binary.BigEndian, &sb)
+	if rre != nil {
+		print(rre)
+	}
+	copy(sb.S_first_blo[:], strconv.Itoa(index+1))
+	archivo.Seek(int64(Ps), 0)
+	binary.Write(archivo, binary.BigEndian, sb)
+
+	inost := strings.Split(string(sb.S_inode_start[:]), "\x00")
+	Inos, _ := strconv.Atoi(inost[0])
+
+	blmst := strings.Split(string(sb.S_bm_block_start[:]), "\x00")
+	blo, _ := strconv.Atoi(blmst[0])
+
+	bitmap := make([]byte, Inos-blo)
+	archivo.Seek(int64(blo), 0)
+	rre = binary.Read(archivo, binary.BigEndian, &bitmap) // se convierte en arreglo de byte
+	if rre != nil {
+		print(rre)
+	}
+	bitmap[index] = '1'
+	archivo.Seek(int64(blo), 0)
+	binary.Write(archivo, binary.BigEndian, bitmap)
+
+	blst := strings.Split(string(sb.S_block_start[:]), "\x00")
+	bloq, _ := strconv.Atoi(blst[0])
+	archivo.Seek(int64(bloq), 0)
+
+	apunt := index * 64
+	archivo.Seek(int64(apunt), 1)
+	binary.Write(archivo, binary.BigEndian, bloque)
+	archivo.Close()
+}
+
 // retorna el inodo deseado por medio de un index
 func get_inodo(index int, disco Disco) TINODOS {
 	var sb SUPER_BLOQUE
@@ -279,33 +349,6 @@ func get_inodo(index int, disco Disco) TINODOS {
 	return inodo
 }
 
-// retorna el bloque carpeta deseado por medio de un index
-func get_bloque_carpeta(index int, disco Disco) BLOQUE_CARPETA {
-	var sb SUPER_BLOQUE
-	puntero := 64 * index
-	archivo, err := os.OpenFile(disco.Path, os.O_RDWR, 0660) // Apertura del archivo
-	if err != nil {
-		fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO (get_bloque_carpeta)")
-	}
-	Pstart := strings.Split(string(disco.Part.Part_start[:]), "\x00")
-	Ps, _ := strconv.Atoi(Pstart[0])
-	archivo.Seek(int64(Ps), 0) // Posicion inicial
-
-	rre := binary.Read(archivo, binary.BigEndian, &sb) // se convierte en arreglo de byte
-	if rre != nil {
-		print(rre)
-	}
-	var Bcarpeta BLOQUE_CARPETA
-	// SE OBTIENE EL BLOQUE DEL INDICE
-	inosta := strings.Split(string(sb.S_block_start[:]), "\x00")
-	is, _ := strconv.Atoi(inosta[0])
-	archivo.Seek(int64(is), 0)
-	archivo.Seek(int64(puntero), 1)
-	binary.Read(archivo, binary.BigEndian, &Bcarpeta)
-	archivo.Close()
-	return Bcarpeta
-}
-
 // retorna el bloque archivo deseado por medio de un index
 func get_bloque_archivo(index int, disco Disco) BLOQUE_ARCHIVO {
 	var barchivo BLOQUE_ARCHIVO
@@ -331,6 +374,31 @@ func get_bloque_archivo(index int, disco Disco) BLOQUE_ARCHIVO {
 	binary.Read(archivo, binary.BigEndian, &barchivo)
 	archivo.Close()
 	return barchivo
+}
+
+// retorna el bloque carpeta deseado por medio de un index
+func get_bloque_carpeta(index int, disco Disco) BLOQUE_CARPETA {
+	var sb SUPER_BLOQUE
+	puntero := 64 * index
+	archivo, err := os.OpenFile(disco.Path, os.O_RDWR, 0660)
+	if err != nil {
+		fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO")
+	}
+	Pstart := strings.Split(string(disco.Part.Part_start[:]), "\x00")
+	Ps, _ := strconv.Atoi(Pstart[0])
+	archivo.Seek(int64(Ps), 0)
+	rre := binary.Read(archivo, binary.BigEndian, &sb)
+	if rre != nil {
+		print(rre)
+	}
+	var bc BLOQUE_CARPETA
+	inosta := strings.Split(string(sb.S_block_start[:]), "\x00")
+	is, _ := strconv.Atoi(inosta[0])
+	archivo.Seek(int64(is), 0)
+	archivo.Seek(int64(puntero), 1)
+	binary.Read(archivo, binary.BigEndian, &bc)
+	archivo.Close()
+	return bc
 }
 
 // retorna el BITMAP
@@ -423,7 +491,7 @@ func escribir_bloques_archivo(index int, texto string, disco Disco) {
 		inosta := strings.Split(string(inodo.I_block[i:i+3]), "\x00")
 		if inosta[0] == "-" {
 			var ba BLOQUE_ARCHIVO
-			pos_ba := newBloque(disco)
+			pos_ba := new_index_bloque(disco)
 			if len(texto) > 63 {
 				copy(ba.B_content[:], texto[0:63])
 				texto = texto[63:]
@@ -438,4 +506,147 @@ func escribir_bloques_archivo(index int, texto string, disco Disco) {
 		}
 	}
 	escribir_inodo(index, inodo, disco)
+}
+
+// retorna la posicion del inodo de un path
+func index_inodo_ruta(path string, disco Disco, index int) int {
+	if path == "" {
+		return 0
+	}
+	var sb SUPER_BLOQUE
+	ruta := separar_ruta(path)
+
+	archivo, err := os.OpenFile(disco.Path, os.O_RDWR, 0660) // Apertura del archivo
+	if err != nil {
+		fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO")
+	}
+	Pstart := strings.Split(string(disco.Part.Part_start[:]), "\x00")
+	Ps, _ := strconv.Atoi(Pstart[0])
+	archivo.Seek(int64(Ps), 0) // Posicion inicial
+
+	rre := binary.Read(archivo, binary.BigEndian, &sb) // se convierte en arreglo de byte
+	if rre != nil {
+		print(rre)
+	}
+	// EMPIEZA A OBTNEER LOS APUNTADORES A CARPETAS
+	inodo := get_inodo(index, disco)
+	iBcarpeta := Indices_BC(inodo, disco)
+	// RECORRER TODOS LOS BLOQUES
+	for _, bloque := range iBcarpeta {
+		var bc BLOQUE_CARPETA
+		bls := strings.Split(string(sb.S_block_start[:]), "\x00")
+		blsi, _ := strconv.Atoi(bls[0])
+		archivo.Seek(int64(blsi), 0)                      // Posicion inicial
+		archivo.Seek(int64(bloque*64), 1)                 // Posicion inicial
+		rre = binary.Read(archivo, binary.BigEndian, &bc) // se convierte en arreglo de byte
+		if rre != nil {
+			print(rre)
+		}
+		// VERIFICO EN CADA APUNTADOR DEL BLOQUE
+		for i := 0; i < 4; i++ {
+			name := strings.Split(string(bc.B_content[i].B_name[:]), "\x00")
+			if name[0] == ruta[0] {
+				rutahijo := ruta
+				rutahijo = append(rutahijo[1:])
+				ret := strings.Split(string(bc.B_content[i].B_inodo[:]), "\x00")
+				retn, _ := strconv.Atoi(ret[0])
+				// CUANDO SE QUEDA VACIO SE LLEGO AL FINAL
+				if len(rutahijo) == 0 {
+					archivo.Close()
+					return retn
+				}
+				// SINO SE USA EL PATH HIJO
+				pp := unir_ruta(rutahijo)
+				// Y SE SIGUE BUSCANDO DE FORMA RECURSIVA CON EL PATH HIIJO
+				resBusqueda := index_inodo_ruta(pp, disco, retn)
+				if resBusqueda != -1 {
+					return resBusqueda
+				}
+			}
+		}
+
+	}
+
+	return -1
+}
+
+// crea la ruta en el sistema de archivo
+func crear_ruta(ruta string, disco Disco) int {
+	carpetas := separar_ruta(ruta)
+	completo := 0
+	for i := 0; i < len(carpetas); i++ {
+		raiz := make([]string, 0)
+		hijo := make([]string, 0)
+		raiz = append(carpetas[0:i])
+		hijo = append(carpetas[0 : i+1])
+
+		IndiceR := index_inodo_ruta(unir_ruta(raiz), disco, 0)
+		if IndiceR == -1 {
+			return -1
+		}
+		IndiceH := index_inodo_ruta(unir_ruta(hijo), disco, 0)
+		if IndiceH != -1 {
+			completo = IndiceH
+
+		} else {
+			completo = crear_carpeta(IndiceR, carpetas[i], disco)
+		}
+	}
+	return completo
+}
+
+// crea una carpeta
+func crear_carpeta(index int, carpeta string, l Disco) int {
+	raiz := get_inodo(index, l)
+	carpetaNew := new_index_inodo(l)
+	Bcarpeta := new_index_bloque(l)
+	IcarpetaNew := newInodo()
+	IcarpetaNew.I_type[0] = '0'
+	copy(IcarpetaNew.I_block[0:3], strconv.Itoa(Bcarpeta))
+	copy(IcarpetaNew.I_uid[:], "1")
+	copy(IcarpetaNew.I_gid[:], "1")
+	copy(IcarpetaNew.I_size[:], "0")
+	copy(IcarpetaNew.I_atime[:], time.Now().Format("2006-01-02 15:04:05"))
+	copy(IcarpetaNew.I_ctime[:], time.Now().Format("2006-01-02 15:04:05"))
+	copy(IcarpetaNew.I_mtime[:], time.Now().Format("2006-01-02 15:04:05"))
+	copy(IcarpetaNew.I_perm[:], "664")
+	bloqueCarpetaNueva := newCarpeta()
+	copy(bloqueCarpetaNueva.B_content[0].B_name[:], ".")
+	copy(bloqueCarpetaNueva.B_content[0].B_inodo[:], strconv.Itoa(carpetaNew))
+	copy(bloqueCarpetaNueva.B_content[1].B_name[:], "..")
+	copy(bloqueCarpetaNueva.B_content[1].B_inodo[:], strconv.Itoa(index))
+	escribir_inodo(carpetaNew, IcarpetaNew, l)
+	escribir_BC(bloqueCarpetaNueva, Bcarpeta, l)
+	var bcontent CONTENIDO
+	copy(bcontent.B_name[:], carpeta)
+	copy(bcontent.B_inodo[:], strconv.Itoa(carpetaNew))
+	listo := false
+	for i := 0; i < 64; i = i + 4 {
+		inosta := strings.Split(string(raiz.I_block[i:i+3]), "\x00")
+		if inosta[0] != "-" {
+			apunt, _ := strconv.Atoi(inosta[0])
+			bloqueDeCarpetas := get_bloque_carpeta(apunt, l)
+			for j := 0; j < 4; j++ {
+				blosta := strings.Split(string(bloqueDeCarpetas.B_content[j].B_inodo[:]), "\x00")
+				if blosta[0] == "-" {
+					bloqueDeCarpetas.B_content[j] = bcontent
+					escribir_BC(bloqueDeCarpetas, apunt, l)
+					listo = true
+					break
+				}
+			}
+		} else {
+			Bcarpeta = new_index_bloque(l)
+			copy(raiz.I_block[i:i+3], strconv.Itoa(Bcarpeta))
+			bloqueDeCarpeta := newCarpeta()
+			bloqueDeCarpeta.B_content[0] = bcontent
+			escribir_inodo(index, raiz, l)
+			escribir_BC(bloqueDeCarpeta, Bcarpeta, l)
+			listo = true
+		}
+		if listo {
+			break
+		}
+	}
+	return carpetaNew
 }

@@ -68,9 +68,12 @@ mkuser >user=user2 >grp=Compi2 >pwd=user2
 rmusr >user=user2
 mkuser >user=user3 >grp=Compi2 >pwd=user3
 
-
-
-pause
+mkdir >r >path=/home/archivos/mia/fase2
+mkdir >r >path=/home/archivos/mia/carpeta2
+mkdir >r >path=/home/archivos/mia/z
+mkdir >path=/home/archivos/mia/carpeta2/a1
+mkdir >path=/home/archivos/mia/carpeta2/a2
+mkdir >path=/home/archivos/mia/carpeta2/a3
 
 
 

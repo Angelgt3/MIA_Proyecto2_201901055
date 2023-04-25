@@ -17,6 +17,7 @@ func Crear_reporte(name string, path string, id string, ruta string) {
 		Reporte_SB(id, path)
 	} else if name == "tree" {
 		Reporte_tree(id, path)
+		fmt.Println("SE GENERO EL REPORTE TREE " + id)
 	} else if name == "file" {
 		Reporte_file(path, ruta, id)
 	}
@@ -41,7 +42,7 @@ func Reporte_tree(id string, path string) {
 func recorrido_arbol(inodo TINODOS, nombre_inodo string, disco Disco, p_inodo int, p_bloque int) string {
 	contenido := ""
 	for i := 0; i < 64; i = i + 4 {
-		inosta := strings.Split(string(inodo.I_block[i]), "\x00")
+		inosta := strings.Split(string(inodo.I_block[i:i+3]), "\x00")
 		if inosta[0] == "-" { //si el inodo no hat bloque se lo salta
 			continue
 		}
@@ -54,10 +55,9 @@ func recorrido_arbol(inodo TINODOS, nombre_inodo string, disco Disco, p_inodo in
 		contenido += "|{i_atime|" + strings.Split(string(inodo.I_atime[:]), "\x00")[0] + "}"
 		contenido += "|{i_ctime|" + strings.Split(string(inodo.I_ctime[:]), "\x00")[0] + "}"
 		contenido += "|{i_mtime|" + strings.Split(string(inodo.I_mtime[:]), "\x00")[0] + "}"
-
 		for a := 0; a < 64; a = a + 4 {
-			contenido += "|{i_block[" + strconv.Itoa(a+1) + "]|"
-			contenido += strings.Split(string(inodo.I_block[a]), "\x00")[0] + "}"
+			contenido += "|{i_block[" + strconv.Itoa(a) + "]|"
+			contenido += strings.Split(string(inodo.I_block[a:a+3]), "\x00")[0] + "}"
 		}
 		contenido += "|{i_type|" + strings.Split(string(inodo.I_type[:]), "\x00")[0] + "}"
 		contenido += "|{i_perm|" + strings.Split(string(inodo.I_perm[:]), "\x00")[0] + "}\"\n\t];"
@@ -77,7 +77,7 @@ func recorrido_arbol(inodo TINODOS, nombre_inodo string, disco Disco, p_inodo in
 				contenido += "\n\tinode" + strconv.Itoa(p_inodo) + "->b" + inosta[0]
 				//ahora recorrer los inodos de los bloques
 				for a := 0; a < 4; a++ {
-					if strings.Split(string(bc.B_content[a].B_inodo[:]), "\x00")[0] != "-" && strings.Split(string(bc.B_content[a].B_inodo[:]), "\x00")[0] != "0" {
+					if strings.Split(string(bc.B_content[a].B_inodo[:]), "\x00")[0] != "-" && strings.Split(string(bc.B_content[a].B_inodo[:]), "\x00")[0] != "0" && strings.Split(string(bc.B_content[a].B_name[:]), "\x00")[0] != "." && strings.Split(string(bc.B_content[a].B_name[:]), "\x00")[0] != ".." {
 						inbb, _ := strconv.Atoi(strings.Split(string(bc.B_content[a].B_inodo[:]), "\x00")[0])
 						inb, _ := strconv.Atoi(inosta[0])
 						sig_inodo := get_inodo(inbb, disco)
@@ -470,8 +470,6 @@ func crear_dot(contenido string, path string) {
 	directorio := directorio(path)
 	name := nombreArchivo(path)
 	ruta := directorio + "/" + name + ".dot"
-	fmt.Println(ruta)
-
 	b := []byte(contenido)
 	err := ioutil.WriteFile(ruta, b, 0755)
 	if err != nil {

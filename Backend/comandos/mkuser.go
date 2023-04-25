@@ -21,7 +21,7 @@ func Mkuser(user string, pwd string, grp string) {
 	for _, registro := range registros { //UID [0], TIPO [1], GRUPO [2], USUARIO [3], CONTRASEÑA [4]
 		if len(registro) == 5 {
 			if registro[3] == user {
-				fmt.Println("ERROR MKUSER: EL GRUPO " + user + " YA EXISTE")
+				fmt.Println("ERROR MKUSER: EL USUARIO " + user + " YA EXISTE")
 				return
 			}
 			cont++
