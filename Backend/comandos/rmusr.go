@@ -5,10 +5,12 @@ import "fmt"
 func Rmusr(name string) {
 	if name == "" {
 		fmt.Println("ERROR RMUSR: NO SE INGRESO EL NOMBRE")
+		respuesta += "\nERROR RMUSR: NO SE INGRESO EL NOMBRE"
 		return
 	}
 	if usuario_activo.Uid != "1" { //solo root
-		fmt.Println("ERROR RMUSR: SOLO EL USUARIO ROOT PUEDE REALIZAR ESTA OPERACION")
+		//fmt.Println("ERROR RMUSR: SOLO EL USUARIO ROOT PUEDE REALIZAR ESTA OPERACION")
+		respuesta += "\nERROR RMUSR: SOLO EL USUARIO ROOT PUEDE REALIZAR ESTA OPERACION"
 		return
 	}
 	contenido := leer_archivo(1, usuario_activo.Montada)
@@ -33,9 +35,11 @@ func Rmusr(name string) {
 	escribir_bloques_archivo(1, newcontenido, usuario_activo.Montada)
 
 	if se_elimino {
-		fmt.Println("EL USUARIO " + name + " FUE ELIMINADO CON EXITO")
+		//fmt.Println("EL USUARIO " + name + " FUE ELIMINADO CON EXITO")
+		respuesta += "\nEL USUARIO " + name + " FUE ELIMINADO CON EXITO"
 	} else {
-		fmt.Println("ERROR MRUSR: NO SE ENCONTRO EL GRUPO")
+		//fmt.Println("ERROR MRUSR: NO SE ENCONTRO EL GRUPO")
+		respuesta += "\nERROR MRUSR: NO SE ENCONTRO EL GRUPO"
 	}
 
 }

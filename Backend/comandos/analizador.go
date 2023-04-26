@@ -8,34 +8,37 @@ import (
 )
 
 // ------------------------------ANALIZADOR---------------------------------------------
-func Leer_archivo(nombreArchivo string) {
+func Leer_archivo(nombreArchivo string) string {
 	//abrimos el archivo
+	fmt.Println("EJECUTANDO SCRIPT ... ")
 	bytesLeidos, err := ioutil.ReadFile(nombreArchivo)
 	if err != nil {
-		fmt.Printf("Error leyendo archivo: %v", err)
+		//fmt.Printf("Error leyendo archivo: %v", err)
+		respuesta += "ERROR: NO SE PUDO ABRIR EL ARCHIVO (analizador)"
 	}
 	//convierto todo el texto en minusculas}
 	contenido := strings.ToLower(string(bytesLeidos))
 	//separa el contenido por lineas
 	lineasComoArreglo := strings.Split(string(contenido), "\n")
-
 	var parametros [15]string
+	var tem string = ""
 	for _, nombre := range lineasComoArreglo {
 		if nombre != "" {
-			//fmt.Println(nombre)
 			//separa comando y parametros
 			cpara := strings.Split(string(nombre), ">")
 			cont := 0
 			for _, paaa := range cpara {
 				r := strings.Replace(paaa, " ", "", -1) //quito los espacios en blanco
-				//fmt.Println(r)
-				parametros[cont] = r //el primero siempre sera el comando -seguido de los parametros
+				parametros[cont] = r                    //el primero siempre sera el comando -seguido de los parametros
 				cont++
 			}
 			ejecutar_script(parametros)
 		}
-
 	}
+	tem = respuesta
+	respuesta = ""
+	fmt.Println("SE TERMINO DE EJECUTAR EL SCRIPT :)")
+	return tem
 }
 
 func ejecutar_script(comando [15]string) {
@@ -45,7 +48,6 @@ func ejecutar_script(comando [15]string) {
 	if string(comando[0][0]) == "#" { //quito los comentarios al inicio
 		return
 	}
-	//fmt.Println("comando:" + comando[0])
 	if comando[0] == "mkdisk" { //MKDISK-ANALIZADOR
 		var size int = 0
 		var path, fit, unit string = "", "ff", "m"
@@ -54,8 +56,6 @@ func ejecutar_script(comando [15]string) {
 				break
 			}
 			part := strings.Split(string(comando[i]), "=")
-			//fmt.Println(part[0])
-			//fmt.Println(part[1])
 			if part[0] == "size" {
 				size, _ = strconv.Atoi(part[1])
 			} else if part[0] == "fit" {
@@ -284,10 +284,36 @@ func ejecutar_script(comando [15]string) {
 			}
 		}
 		Mkdir(path, r)
+	} else if comando[0] == "mkfile" { //MKFILE-ANALIZADOR
+		var path, size, cont string = "", "0", ""
+		var r bool = false
+		for i := 1; i < 15; i++ {
+			if comando[i] == "" {
+				break
+			}
+			part := strings.Split(string(comando[i]), "=")
+			if part[0] == "path" {
+				if path == "" {
+					path = part[1]
+				}
+			} else if part[0] == "r" {
+				r = true
+			} else if part[0] == "size" {
+				if size == "0" {
+					size = part[1]
+				}
+			} else if part[0] == "cont" {
+				if cont == "" {
+					cont = part[1]
+				}
+			}
+		}
+		Mkfile(path, r, size, cont)
 	} else if comando[0] == "pause" { //PAUSE-ANALIZADOR
-		fmt.Println(" PAUSA: Presione cualguien tecla para continuar")
-		pause := ""
-		fmt.Scanln(&pause)
-
+		/*
+			fmt.Println(" PAUSA: Presione cualguien tecla para continuar")
+			pause := ""
+			fmt.Scanln(&pause)
+		*/
 	}
 }

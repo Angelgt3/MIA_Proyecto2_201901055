@@ -3,7 +3,6 @@ package comandos
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
 	"math"
 	"os"
 	"strconv"
@@ -14,11 +13,13 @@ import (
 func mkfs(id string, typee string) {
 	//validar los parametros
 	if id == "" {
-		fmt.Println("ERROR MKFS: FALTA PARAMETRO DE ID")
+		//fmt.Println("ERROR MKFS: FALTA PARAMETRO DE ID")
+		respuesta += "\nERROR MKFS: FALTA PARAMETRO DE ID"
 		return
 	}
 	if typee != "full" {
-		fmt.Println("ERROR MKFS: EL VALOR DE TYPE NO ES VALIDO")
+		//fmt.Println("ERROR MKFS: EL VALOR DE TYPE NO ES VALIDO")
+		respuesta += "\nERROR MKFS: EL VALOR DE TYPE NO ES VALIDO"
 		return
 	}
 
@@ -31,10 +32,8 @@ func mkfs(id string, typee string) {
 			return
 		}
 	}
-
-	// ----- ERROR
-	fmt.Println("ERROR MKFS: NO SE ENCONTRO LA PARTICION")
-	return
+	//fmt.Println("ERROR MKFS: NO SE ENCONTRO LA PARTICION")
+	respuesta += "\nERROR MKFS: NO SE ENCONTRO LA PARTICION"
 }
 
 func ext2(particion Disco) {
@@ -98,7 +97,8 @@ func ext2(particion Disco) {
 	//escribir todo en el archivo dsk
 	archivo, err := os.OpenFile(particion.Path, os.O_RDWR, 0660) // Apertura del archivo
 	if err != nil {
-		fmt.Println("ERROR MKFS: NO SE LOGRO ABRIR EL ARCHIVO")
+		//fmt.Println("ERROR MKFS: NO SE LOGRO ABRIR EL ARCHIVO")
+		respuesta += "\nERROR MKFS: NO SE LOGRO ABRIR EL ARCHIVO"
 	}
 	// se escribe le super bloque
 	archivo.Seek(int64(Ps), 0) // Posicion inicial de la particion
@@ -193,7 +193,8 @@ func ext2(particion Disco) {
 	//se escribe los bloques en el archivo
 	archivo, err = os.OpenFile(particion.Path, os.O_RDWR, 0660) // Apertura del archivo
 	if err != nil {
-		fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO")
+		//fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO")
+		respuesta += "\nERROR MKFS: NO SE LOGRO ABRIR EL ARCHIVO"
 	}
 	bstar := strings.Split(string(SB.S_block_start[:]), "\x00")
 	Bs, _ := strconv.Atoi(bstar[0])
@@ -201,5 +202,6 @@ func ext2(particion Disco) {
 	binary.Write(archivo, binary.BigEndian, carpetaRaiz)
 	binary.Write(archivo, binary.BigEndian, archivoUser)
 	archivo.Close()
-	fmt.Println("SE REALIZO EL MKFS CON EXITO")
+	//fmt.Println("SE REALIZO EL MKFS CON EXITO")
+	respuesta += "\nSE REALIZO EL MKFS CON EXITO"
 }

@@ -3,7 +3,6 @@ package comandos
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -13,12 +12,13 @@ import (
 // ------------------------------VARIABLES---------------------------------------------
 var Tmontadas List
 var usuario_activo USUARIO
+var respuesta string = ""
 
 // ------------------------------FUNCIONES---------------------------------------------
 
 func newAjuste() Ajuste {
-	var l [6]int
-	e := Ajuste{l, l, l, l}
+	var disco [6]int
+	e := Ajuste{disco, disco, disco, disco}
 	return e
 }
 
@@ -145,7 +145,7 @@ func Indices_BC(inodo TINODOS, disco Disco) []int {
 func escribir_inodo(index int, inodo TINODOS, particion Disco) {
 	archivo, err := os.OpenFile(particion.Path, os.O_RDWR, 0660) // Apertura del archivo
 	if err != nil {
-		fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO (escribir_inood)")
+		//fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO (escribir_inood)")
 	}
 	Pstart := strings.Split(string(particion.Part.Part_start[:]), "\x00")
 	Ps, _ := strconv.Atoi(Pstart[0])
@@ -196,7 +196,7 @@ func escribir_bitmap(bitmap []byte, disco Disco, tipo bool) { //TRUE = INODO | F
 	size := -1
 	archivo, err := os.OpenFile(disco.Path, os.O_RDWR, 0660) // Apertura del archivo
 	if err != nil {
-		fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO (escribir_bitmap)")
+		//fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO (escribir_bitmap)")
 	}
 	Pstart := strings.Split(string(disco.Part.Part_start[:]), "\x00")
 	Ps, _ := strconv.Atoi(Pstart[0])
@@ -236,7 +236,7 @@ func escribir_bitmap(bitmap []byte, disco Disco, tipo bool) { //TRUE = INODO | F
 func escribir_BA(bloque BLOQUE_ARCHIVO, index int, disco Disco) {
 	archivo, err := os.OpenFile(disco.Path, os.O_RDWR, 0660)
 	if err != nil {
-		fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO")
+		//fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO")
 	}
 	Pstart := strings.Split(string(disco.Part.Part_start[:]), "\x00")
 	Ps, _ := strconv.Atoi(Pstart[0])
@@ -280,7 +280,7 @@ func escribir_BA(bloque BLOQUE_ARCHIVO, index int, disco Disco) {
 func escribir_BC(bloque BLOQUE_CARPETA, index int, disco Disco) {
 	archivo, err := os.OpenFile(disco.Path, os.O_RDWR, 0660)
 	if err != nil {
-		fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO")
+		//fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO")
 	}
 	Pstart := strings.Split(string(disco.Part.Part_start[:]), "\x00")
 	Ps, _ := strconv.Atoi(Pstart[0])
@@ -327,7 +327,7 @@ func get_inodo(index int, disco Disco) TINODOS {
 
 	archivo, err := os.OpenFile(disco.Path, os.O_RDWR, 0660)
 	if err != nil {
-		fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO (get_inodo)")
+		//fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO (get_inodo)")
 	}
 	Pstart := strings.Split(string(disco.Part.Part_start[:]), "\x00")
 	Ps, _ := strconv.Atoi(Pstart[0])
@@ -351,12 +351,12 @@ func get_inodo(index int, disco Disco) TINODOS {
 
 // retorna el bloque archivo deseado por medio de un index
 func get_bloque_archivo(index int, disco Disco) BLOQUE_ARCHIVO {
-	var barchivo BLOQUE_ARCHIVO
+	var ba BLOQUE_ARCHIVO
 	var sb SUPER_BLOQUE
 	puntero := 64 * index
 	archivo, err := os.OpenFile(disco.Path, os.O_RDWR, 0660) // Apertura del archivo
 	if err != nil {
-		fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO (get_bloque_archivo)")
+		//fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO (get_bloque_archivo)")
 	}
 	Pstart := strings.Split(string(disco.Part.Part_start[:]), "\x00")
 	Ps, _ := strconv.Atoi(Pstart[0])
@@ -371,9 +371,9 @@ func get_bloque_archivo(index int, disco Disco) BLOQUE_ARCHIVO {
 	is, _ := strconv.Atoi(inosta[0])
 	archivo.Seek(int64(is), 0)
 	archivo.Seek(int64(puntero), 1)
-	binary.Read(archivo, binary.BigEndian, &barchivo)
+	binary.Read(archivo, binary.BigEndian, &ba)
 	archivo.Close()
-	return barchivo
+	return ba
 }
 
 // retorna el bloque carpeta deseado por medio de un index
@@ -382,7 +382,7 @@ func get_bloque_carpeta(index int, disco Disco) BLOQUE_CARPETA {
 	puntero := 64 * index
 	archivo, err := os.OpenFile(disco.Path, os.O_RDWR, 0660)
 	if err != nil {
-		fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO")
+		//fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO (get_bloque_carpeta)")
 	}
 	Pstart := strings.Split(string(disco.Part.Part_start[:]), "\x00")
 	Ps, _ := strconv.Atoi(Pstart[0])
@@ -407,7 +407,7 @@ func get_bitmap(disco Disco, tipo bool) []byte { //TRUE = INODO | FALSE = BLOQUE
 	size := -1
 	archivo, err := os.OpenFile(disco.Path, os.O_RDWR, 0660)
 	if err != nil {
-		fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO (get_bitmap)")
+		//fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO (get_bitmap)")
 	}
 	Pstart := strings.Split(string(disco.Part.Part_start[:]), "\x00")
 	Ps, _ := strconv.Atoi(Pstart[0])
@@ -518,7 +518,7 @@ func index_inodo_ruta(path string, disco Disco, index int) int {
 
 	archivo, err := os.OpenFile(disco.Path, os.O_RDWR, 0660) // Apertura del archivo
 	if err != nil {
-		fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO")
+		//fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO (index_inodo_ruta)")
 	}
 	Pstart := strings.Split(string(disco.Part.Part_start[:]), "\x00")
 	Ps, _ := strconv.Atoi(Pstart[0])
@@ -596,13 +596,13 @@ func crear_ruta(ruta string, disco Disco) int {
 }
 
 // crea una carpeta
-func crear_carpeta(index int, carpeta string, l Disco) int {
-	raiz := get_inodo(index, l)
-	carpetaNew := new_index_inodo(l)
-	Bcarpeta := new_index_bloque(l)
+func crear_carpeta(index int, carpeta string, disco Disco) int {
+	raiz := get_inodo(index, disco)
+	carpetaNew := new_index_inodo(disco)
+	bc := new_index_bloque(disco)
 	IcarpetaNew := newInodo()
 	IcarpetaNew.I_type[0] = '0'
-	copy(IcarpetaNew.I_block[0:3], strconv.Itoa(Bcarpeta))
+	copy(IcarpetaNew.I_block[0:3], strconv.Itoa(bc))
 	copy(IcarpetaNew.I_uid[:], "1")
 	copy(IcarpetaNew.I_gid[:], "1")
 	copy(IcarpetaNew.I_size[:], "0")
@@ -615,8 +615,8 @@ func crear_carpeta(index int, carpeta string, l Disco) int {
 	copy(bloqueCarpetaNueva.B_content[0].B_inodo[:], strconv.Itoa(carpetaNew))
 	copy(bloqueCarpetaNueva.B_content[1].B_name[:], "..")
 	copy(bloqueCarpetaNueva.B_content[1].B_inodo[:], strconv.Itoa(index))
-	escribir_inodo(carpetaNew, IcarpetaNew, l)
-	escribir_BC(bloqueCarpetaNueva, Bcarpeta, l)
+	escribir_inodo(carpetaNew, IcarpetaNew, disco)
+	escribir_BC(bloqueCarpetaNueva, bc, disco)
 	var bcontent CONTENIDO
 	copy(bcontent.B_name[:], carpeta)
 	copy(bcontent.B_inodo[:], strconv.Itoa(carpetaNew))
@@ -625,23 +625,23 @@ func crear_carpeta(index int, carpeta string, l Disco) int {
 		inosta := strings.Split(string(raiz.I_block[i:i+3]), "\x00")
 		if inosta[0] != "-" {
 			apunt, _ := strconv.Atoi(inosta[0])
-			bloqueDeCarpetas := get_bloque_carpeta(apunt, l)
+			bloqueDeCarpetas := get_bloque_carpeta(apunt, disco)
 			for j := 0; j < 4; j++ {
 				blosta := strings.Split(string(bloqueDeCarpetas.B_content[j].B_inodo[:]), "\x00")
 				if blosta[0] == "-" {
 					bloqueDeCarpetas.B_content[j] = bcontent
-					escribir_BC(bloqueDeCarpetas, apunt, l)
+					escribir_BC(bloqueDeCarpetas, apunt, disco)
 					listo = true
 					break
 				}
 			}
 		} else {
-			Bcarpeta = new_index_bloque(l)
-			copy(raiz.I_block[i:i+3], strconv.Itoa(Bcarpeta))
+			bc = new_index_bloque(disco)
+			copy(raiz.I_block[i:i+3], strconv.Itoa(bc))
 			bloqueDeCarpeta := newCarpeta()
 			bloqueDeCarpeta.B_content[0] = bcontent
-			escribir_inodo(index, raiz, l)
-			escribir_BC(bloqueDeCarpeta, Bcarpeta, l)
+			escribir_inodo(index, raiz, disco)
+			escribir_BC(bloqueDeCarpeta, bc, disco)
 			listo = true
 		}
 		if listo {
@@ -649,4 +649,133 @@ func crear_carpeta(index int, carpeta string, l Disco) int {
 		}
 	}
 	return carpetaNew
+}
+
+func existe_ruta(path string, disco Disco, index int) int {
+	if path == "" {
+		return 0
+	}
+	var sb SUPER_BLOQUE
+	ruta := separar_ruta(path)
+	archivo, err := os.OpenFile(disco.Path, os.O_RDWR, 0660)
+	if err != nil {
+		//fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO (existe_ruta)")
+	}
+	Pstart := strings.Split(string(disco.Part.Part_start[:]), "\x00")
+	Ps, _ := strconv.Atoi(Pstart[0])
+	archivo.Seek(int64(Ps), 0)
+	rre := binary.Read(archivo, binary.BigEndian, &sb)
+	if rre != nil {
+		print(rre)
+	}
+	inodo := get_inodo(index, disco)
+	iBcarpeta := Indices_BC(inodo, disco)
+	for _, bloque := range iBcarpeta {
+		var bc BLOQUE_CARPETA
+		bls := strings.Split(string(sb.S_block_start[:]), "\x00")
+		blsi, _ := strconv.Atoi(bls[0])
+		archivo.Seek(int64(blsi), 0)
+		archivo.Seek(int64(bloque*64), 1)
+		rre = binary.Read(archivo, binary.BigEndian, &bc)
+		if rre != nil {
+			print(rre)
+		}
+		for i := 0; i < 4; i++ {
+			name := strings.Split(string(bc.B_content[i].B_name[:]), "\x00")
+			if name[0] == ruta[0] {
+				rutahijo := ruta
+				rutahijo = append(rutahijo[1:])
+				ret := strings.Split(string(bc.B_content[i].B_inodo[:]), "\x00")
+				retn, _ := strconv.Atoi(ret[0])
+				if len(rutahijo) == 0 {
+					archivo.Close()
+					return retn
+				}
+				pp := unir_ruta(rutahijo)
+				resBusqueda := existe_ruta(pp, disco, retn)
+				if resBusqueda != -1 {
+					archivo.Close()
+					return resBusqueda
+				}
+			}
+		}
+	}
+	return -1
+}
+
+func crear_archivo(size int, nombre string, index int, disco Disco) int {
+	indaArchivo := new_index_inodo(disco)
+	var COntenedorArch CONTENIDO
+	copy(COntenedorArch.B_name[:], nombre)
+	copy(COntenedorArch.B_inodo[:], strconv.Itoa(indaArchivo))
+
+	icarpeta := get_inodo(index, disco)
+	listo := false
+
+	for i := 0; i < 64; i = i + 4 {
+		inosta := strings.Split(string(icarpeta.I_block[i:i+3]), "\x00")
+		if inosta[0] != "-" {
+			apunt, _ := strconv.Atoi(inosta[0])
+			bloqueDeCarpetas := get_bloque_carpeta(apunt, disco)
+			for j := 0; j < 4; j++ {
+				blosta := strings.Split(string(bloqueDeCarpetas.B_content[j].B_inodo[:]), "\x00")
+				if blosta[0] == "-" {
+					bloqueDeCarpetas.B_content[j] = COntenedorArch
+					escribir_BC(bloqueDeCarpetas, apunt, disco)
+					listo = true
+					break
+				}
+			}
+		} else {
+			indice := new_index_bloque(disco)
+			copy(icarpeta.I_block[i:i+3], strconv.Itoa(indice))
+			bloqueDeCarpeta := newCarpeta()
+			bloqueDeCarpeta.B_content[0] = COntenedorArch
+			escribir_BC(bloqueDeCarpeta, indice, disco)
+			escribir_inodo(index, icarpeta, disco)
+			listo = true
+		}
+		if listo {
+			break
+		}
+	}
+	iarchivo := newInodo()
+	iarchivo.I_type[0] = '1'
+	copy(iarchivo.I_uid[:], "1")
+	copy(iarchivo.I_gid[:], "1")
+	copy(iarchivo.I_size[:], strconv.Itoa(size))
+	copy(iarchivo.I_atime[:], time.Now().Format("2006-01-02 15:04:05"))
+	copy(iarchivo.I_ctime[:], time.Now().Format("2006-01-02 15:04:05"))
+	copy(iarchivo.I_mtime[:], time.Now().Format("2006-01-02 15:04:05"))
+	copy(iarchivo.I_perm[:], "664")
+	escribir_inodo(indaArchivo, iarchivo, disco)
+	return indaArchivo
+}
+
+func modificar_archivo(index int, texto string, disco Disco) {
+	archivo := get_inodo(index, disco)
+	btes := 0
+	lenn := len(texto)
+	for i := 0; i < 64; i = i + 4 {
+		if btes >= lenn {
+			break
+		}
+		inosta := strings.Split(string(archivo.I_block[i:i+3]), "\x00")
+		if inosta[0] == "-" {
+			var ba BLOQUE_ARCHIVO
+			iBarchivo := new_index_bloque(disco)
+			if len(texto) > 63 {
+				copy(ba.B_content[:], texto[0:63])
+				texto = texto[63:]
+			} else {
+				copy(ba.B_content[:], texto[0:])
+			}
+
+			btes = btes + 63
+			sf := strconv.Itoa(iBarchivo)
+			copy(archivo.I_block[i:i+3], sf)
+			escribir_BA(ba, iBarchivo, disco)
+		}
+	}
+	escribir_inodo(index, archivo, disco)
 }

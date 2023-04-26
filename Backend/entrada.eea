@@ -75,9 +75,22 @@ mkdir >path=/home/archivos/mia/carpeta2/a1
 mkdir >path=/home/archivos/mia/carpeta2/a2
 mkdir >path=/home/archivos/mia/carpeta2/a3
 
+#CREACION_DE_ARCHIVOS
+mkfile >path=/home/b1.txt >size=15
+mkfile >path=/home/b2.txt >size=15
+mkfile >path=/home/b3.txt >size=15
+mkfile >path=/home/archivos/mia/carpeta2/a1/b4.txt >size= 15
+
+#Debe_dar_error_ruta_no_existe
+mkfile >path=/home/Noexiste/c1.txt >size=25
+
+mkfile >cont=/home/entrada.txt >path=/home/bcont.txt
 
 
 #REPORTES
 rep >id=551a >path=/home/parte2/sb.jpg >name=SB
 rep >id=551a >path=/home/parte2/tree.jpg >name=tree
-#rep >id=551a >path=/home/parte2/users_1.txt >ruta=/users.txt >name=file
+rep >id=551a >path=/home/parte2/users_1.txt >ruta=/users.txt >name=file
+rep >id=551a >path=/home/parte2/users_2.txt >ruta=/home/archivos/mia/carpeta2/a1/b4.txt >name=file
+rep >id=551a >path=/home/parte2/users_3.txt >ruta=/home/bcont.txt >name=file
+

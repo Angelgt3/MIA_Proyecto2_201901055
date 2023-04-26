@@ -1,14 +1,14 @@
 package comandos
 
-import "fmt"
-
 func Rmgrp(name string) {
 	if name == "" {
-		fmt.Println("ERROR RMGRP: NO SE INGRESO EL NOMBRE")
+		//fmt.Println("ERROR RMGRP: NO SE INGRESO EL NOMBRE")
+		respuesta += "\nERROR RMGRP: NO SE INGRESO EL NOMBRE"
 		return
 	}
 	if usuario_activo.Uid != "1" { //solo root
-		fmt.Println("ERROR RMGRP: SOLO EL USUARIO ROOT PUEDE REALIZAR ESTA OPERACION")
+		//fmt.Println("ERROR RMGRP: SOLO EL USUARIO ROOT PUEDE REALIZAR ESTA OPERACION")
+		respuesta += "\nERROR RMGRP: SOLO EL USUARIO ROOT PUEDE REALIZAR ESTA OPERACION"
 		return
 	}
 	contenido := leer_archivo(1, usuario_activo.Montada)
@@ -32,9 +32,11 @@ func Rmgrp(name string) {
 	escribir_bloques_archivo(1, newcontenido, usuario_activo.Montada)
 
 	if se_elimino {
-		fmt.Println("EL GRUPO " + name + " FUE ELIMINADO CON EXITO")
+		//fmt.Println("EL GRUPO " + name + " FUE ELIMINADO CON EXITO")
+		respuesta += "\nEL GRUPO " + name + " FUE ELIMINADO CON EXITO"
 	} else {
-		fmt.Println("ERROR RMGRP: NO SE ENCONTRO EL GRUPO")
+		//fmt.Println("ERROR RMGRP: NO SE ENCONTRO EL GRUPO")
+		respuesta += "\nERROR RMGRP: NO SE ENCONTRO EL GRUPO"
 	}
 
 }

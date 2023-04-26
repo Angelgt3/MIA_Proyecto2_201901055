@@ -2,7 +2,6 @@ package comandos
 
 import (
 	"encoding/binary"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -17,15 +16,38 @@ func Crear_reporte(name string, path string, id string, ruta string) {
 		Reporte_SB(id, path)
 	} else if name == "tree" {
 		Reporte_tree(id, path)
-		fmt.Println("SE GENERO EL REPORTE TREE " + id)
+		//fmt.Println("SE GENERO EL REPORTE TREE " + id)
+		respuesta += "\nSE GENERO EL REPORTE TREE " + id
 	} else if name == "file" {
 		Reporte_file(path, ruta, id)
+
 	}
 }
 
 // reporte file
 func Reporte_file(path string, ruta string, id string) {
-
+	disco := get_disco(id)
+	indiceInodoArchivo := existe_ruta(ruta, disco, 0)
+	if indiceInodoArchivo == -1 {
+		//fmt.Println("ERROR REP: NO SE ENCONTRO LA RUTA PARA REALIZAR EL REPORTE FILE")
+		respuesta += "\nERROR REP: NO SE ENCONTRO LA RUTA PARA REALIZAR EL REPORTE FILE"
+		return
+	}
+	contenidoArchivo := leer_archivo(indiceInodoArchivo, disco)
+	contenido := "digraph { \n"
+	contenido += "rankdir = LR \n"
+	contenido += "node[shape = record] \n"
+	contenido += "struct [ \n"
+	contenido += "label = "
+	contenido += "\""
+	contenido += nombre_archivo(ruta) + "|"
+	contenido += contenidoArchivo
+	contenido += "\""
+	contenido += "] \n"
+	contenido += "}"
+	crear_dot(contenido, path)
+	//fmt.Println("SE GENERO EL REPORTE FILE " + ruta)
+	respuesta += "\nSE GENERO EL REPORTE FILE " + ruta
 }
 
 // reporte arbol
@@ -409,7 +431,8 @@ func reporte_disco(id string, path string) {
 	contenido += ">]\n }"
 
 	crear_dot(contenido, path)
-	fmt.Println("SE GENERO EL REPORTE DEL DISCO " + id)
+	//fmt.Println("SE GENERO EL REPORTE DEL DISCO " + id)
+	respuesta += "\nSE GENERO EL REPORTE DEL DISCO " + id
 }
 
 // reporte del super bloque
@@ -451,7 +474,8 @@ func Reporte_SB(id string, path string) {
 	contenido += "<tr><td>s_block_start</td><td>" + strings.Split(string(sb.S_block_start[:]), "\x00")[0] + "</td></tr>\n"
 	contenido += "</table>\n > ];\n  }"
 	crear_dot(contenido, path)
-	fmt.Println("SE GENERO EL REPORTE DEL SB " + id)
+	//fmt.Println("SE GENERO EL REPORTE DEL SB " + id)
+	respuesta += "\nSE GENERO EL REPORTE DEL SB " + id
 }
 
 // Busca el path por el id
@@ -468,7 +492,7 @@ func buscarPath(id string) string {
 func crear_dot(contenido string, path string) {
 
 	directorio := directorio(path)
-	name := nombreArchivo(path)
+	name := nombre_archivo(path)
 	ruta := directorio + "/" + name + ".dot"
 	b := []byte(contenido)
 	err := ioutil.WriteFile(ruta, b, 0755)
@@ -494,12 +518,21 @@ func directorio(path string) string {
 }
 
 // retorna el nombre del archivo
-func nombreArchivo(path string) string {
+func nombre_archivo(path string) string {
 	ruta := strings.Split(path, "/")
 	nomext := ruta[len(ruta)-1]
 	sepNom := strings.Split(nomext, ".")
 	nom := sepNom[0]
 	return nom
+}
+
+// retorna la extension del archivo
+func extension(path string) string {
+	ruta := strings.Split(path, "/")
+	nomext := ruta[len(ruta)-1]
+	sepNom := strings.Split(nomext, ".")
+	ext := sepNom[1]
+	return ext
 }
 
 func porcentaje(tam_disco int, tam int) string {

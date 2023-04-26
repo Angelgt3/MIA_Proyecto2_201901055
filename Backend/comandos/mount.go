@@ -83,18 +83,22 @@ func Mount(path string, name string) {
 			Tmontadas.Add(eslist)
 		}
 	}
-	fmt.Println("SE MONTO LA PARTICION " + name + " CON ID: " + eslist.Id)
-
+	//fmt.Println("SE MONTO LA PARTICION " + name + " CON ID: " + eslist.Id)
+	respuesta += "\nSE MONTO LA PARTICION " + name + " CON ID: " + eslist.Id
 }
 
 func Mostrar_mount() {
 	fmt.Println("-----------------------------PARTICIONES MONTADAS------------------------------")
+	respuesta += "\n-----------------------------PARTICIONES MONTADAS------------------------------\n"
 	fmt.Println("")
 	for i := 0; i < Tmontadas.Len(); i++ {
 		mon := Tmontadas.GetValue(i).(Disco)
 		fmt.Println(">id=" + mon.Id + " >path=" + mon.Path + " >name=" + mon.Name)
+		respuesta += "\n>id=" + mon.Id + " >path=" + mon.Path + " >name=" + mon.Name
 	}
 	fmt.Println("")
 	fmt.Println("-------------------------------------------------------------------------------")
 	fmt.Println("")
+	respuesta += "\n----------------------------------------------------------------------------\n"
+
 }

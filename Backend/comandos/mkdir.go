@@ -1,10 +1,9 @@
 package comandos
 
-import "fmt"
-
 func Mkdir(path string, r bool) {
 	if path == "" {
-		fmt.Println("ERROR MKDIR: FALTA PARAMETRO DE PATH")
+		//fmt.Println("ERROR MKDIR: FALTA PARAMETRO DE PATH")
+		respuesta += "\nERROR MKDIR: FALTA PARAMETRO DE PATH"
 		return
 	}
 
@@ -13,7 +12,8 @@ func Mkdir(path string, r bool) {
 	pathSep = append(pathSep[:len(pathSep)-1])
 	pathCarpetaPadre := unir_ruta(pathSep)
 	if !usuario_activo.Logeado {
-		fmt.Println("ERRROR: NO HAY USUARIO LOGEADO")
+		//fmt.Println("ERRROR: NO HAY USUARIO LOGEADO")
+		respuesta += "\nERRROR: NO HAY USUARIO LOGEADO"
 		return
 	}
 	indiceInodoCarpetaPadre := index_inodo_ruta(pathCarpetaPadre, usuario_activo.Montada, 0)
@@ -21,12 +21,13 @@ func Mkdir(path string, r bool) {
 		if r {
 			indiceInodoCarpetaPadre = crear_ruta(pathCarpetaPadre, usuario_activo.Montada)
 		} else {
-			fmt.Println("ERROR: NO EXISTE LA RUTA INDICADA")
+			//fmt.Println("ERROR: NO EXISTE LA RUTA INDICADA")
+			respuesta += "\nERROR: NO EXISTE LA RUTA INDICADA"
 			return
 		}
 	}
 	crear_carpeta(indiceInodoCarpetaPadre, NameCarpetaNew, usuario_activo.Montada)
 
-	fmt.Println("SE CREO LA CARPETA CORRECTAMENTE")
-
+	//fmt.Println("SE CREO LA CARPETA CORRECTAMENTE")
+	respuesta += "\nSE CREO LA CARPETA CORRECTAMENTE"
 }

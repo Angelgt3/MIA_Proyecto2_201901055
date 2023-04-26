@@ -2,7 +2,6 @@ package comandos
 
 import (
 	"encoding/binary"
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -12,7 +11,8 @@ func fdisk(size int, unit string, path string, typee string, fit string, name st
 	// verificar si existe la ruta
 	existeP := archivoExiste(path)
 	if !existeP {
-		fmt.Println("ERROR: NO EXISTE LA RUTA DEL DISCO")
+		//fmt.Println("ERROR: NO EXISTE LA RUTA DEL DISCO")
+		respuesta += "\nERROR: NO EXISTE LA RUTA DEL DISCO"
 		return
 	}
 
@@ -42,20 +42,17 @@ func fdisk(size int, unit string, path string, typee string, fit string, name st
 	//verficar que no haya una particion con el mismo nombre
 	var repetido bool = false
 	if name == string(mbr.Mbr_partition_1.Part_name[:]) {
-		fmt.Println(string(mbr.Mbr_partition_1.Part_name[:]))
 		repetido = true
 	} else if name == string(mbr.Mbr_partition_2.Part_name[:]) {
-		fmt.Println(string(mbr.Mbr_partition_2.Part_name[:]))
 		repetido = true
 	} else if name == string(mbr.Mbr_partition_3.Part_name[:]) {
-		fmt.Println(string(mbr.Mbr_partition_3.Part_name[:]))
 		repetido = true
 	} else if name == string(mbr.Mbr_partition_4.Part_name[:]) {
-		fmt.Println(string(mbr.Mbr_partition_4.Part_name[:]))
 		repetido = true
 	}
 	if repetido {
-		fmt.Println("ERROR FDISK: No se puede tener particiones con el mismo nombre")
+		//fmt.Println("ERROR FDISK: No se puede tener particiones con el mismo nombre")
+		respuesta += "\nERROR FDISK: No se puede tener particiones con el mismo nombre"
 		return
 	}
 
@@ -76,31 +73,36 @@ func crear_particiones(mbr MBR, tam int, path string, name string, typee string,
 	if mbr.Mbr_partition_1.Part_status == part { //particion 1
 		p1 = true
 	} else if string(mbr.Mbr_partition_1.Part_type[0]) == "e" && typee == "e" {
-		fmt.Println("ERROR: YA EXISTE UNA PARTICION EXTENDIDA")
+		//fmt.Println("ERROR: YA EXISTE UNA PARTICION EXTENDIDA")
+		respuesta += "\nERROR: YA EXISTE UNA PARTICION EXTENDIDA"
 		return
 	}
 	if mbr.Mbr_partition_2.Part_status == part {
 		p2 = true
 	} else if string(mbr.Mbr_partition_2.Part_type[0]) == "e" && typee == "e" {
-		fmt.Println("ERROR: YA EXISTE UNA PARTICION EXTENDIDA")
+		//fmt.Println("ERROR: YA EXISTE UNA PARTICION EXTENDIDA")
+		respuesta += "\nERROR: YA EXISTE UNA PARTICION EXTENDIDA"
 		return
 	}
 
 	if mbr.Mbr_partition_3.Part_status == part {
 		p3 = true
 	} else if string(mbr.Mbr_partition_3.Part_type[0]) == "e" && typee == "e" {
-		fmt.Println("ERROR: YA EXISTE UNA PARTICION EXTENDIDA")
+		//fmt.Println("ERROR: YA EXISTE UNA PARTICION EXTENDIDA")
+		respuesta += "\nERROR: YA EXISTE UNA PARTICION EXTENDIDA"
 		return
 	}
 
 	if mbr.Mbr_partition_4.Part_status == part {
 		p4 = true
 	} else if string(mbr.Mbr_partition_4.Part_type[0]) == "e" && typee == "e" {
-		fmt.Println("ERROR: YA EXISTE UNA PARTICION EXTENDIDA")
+		//fmt.Println("ERROR: YA EXISTE UNA PARTICION EXTENDIDA")
+		respuesta += "\nERROR: YA EXISTE UNA PARTICION EXTENDIDA"
 		return
 	}
 	if !p1 && !p2 && !p3 && !p4 {
-		fmt.Println("ERROR: YA EXISTEN 4 PARTICIONES")
+		//fmt.Println("ERROR: YA EXISTEN 4 PARTICIONES")
+		respuesta += "\nERROR: YA EXISTEN 4 PARTICIONES"
 		return
 	}
 	if typee == "e" {
@@ -192,7 +194,8 @@ func crear_particiones(mbr MBR, tam int, path string, name string, typee string,
 		}
 	}
 	if !hayS {
-		fmt.Println("ERROR: NO HAY ESPACIO SUFICIENTE PARA LA PARTICION")
+		//fmt.Println("ERROR: NO HAY ESPACIO SUFICIENTE PARA LA PARTICION")
+		respuesta += "\nERROR: NO HAY ESPACIO SUFICIENTE PARA LA PARTICION"
 		return
 	}
 	// Busca la particion con mejor ajuste
@@ -246,7 +249,8 @@ func crear_particiones(mbr MBR, tam int, path string, name string, typee string,
 		intVar, _ := strconv.Atoi(star)
 		disco, err := os.OpenFile(string(path), os.O_RDWR, 0660) // Apertura del archivo
 		if err != nil {
-			fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO")
+			//fmt.Println("ERROR FDISK: NO SE LOGRO ABRIR EL ARCHIVO")
+			respuesta += "\nERROR FDISK: NO SE LOGRO ABRIR EL ARCHIVO"
 		}
 
 		disco.Seek(int64(intVar), 0)
@@ -267,7 +271,8 @@ func crear_particiones(mbr MBR, tam int, path string, name string, typee string,
 		copy(mbr.Mbr_partition_1.Part_status[:], "1")
 		copy(mbr.Mbr_partition_1.Part_type[:], typee)
 		guardaMBR(mbr, path)
-		fmt.Println("SE CREO LA PARTICION " + name + " EN " + path + " CON EXITO")
+		//fmt.Println("SE CREO LA PARTICION " + name + " EN " + path + " CON EXITO")
+		respuesta += "\nSE CREO LA PARTICION " + name + " EN " + path + " CON EXITO"
 		return
 	}
 	if p2 {
@@ -283,7 +288,8 @@ func crear_particiones(mbr MBR, tam int, path string, name string, typee string,
 		copy(mbr.Mbr_partition_2.Part_status[:], "1")
 		copy(mbr.Mbr_partition_2.Part_type[:], typee)
 		guardaMBR(mbr, path)
-		fmt.Println("SE CREO LA PARTICION " + name + " EN " + path + " CON EXITO")
+		//fmt.Println("SE CREO LA PARTICION " + name + " EN " + path + " CON EXITO")
+		respuesta += "\nSE CREO LA PARTICION " + name + " EN " + path + " CON EXITO"
 		return
 	}
 	if p3 {
@@ -299,7 +305,8 @@ func crear_particiones(mbr MBR, tam int, path string, name string, typee string,
 		copy(mbr.Mbr_partition_3.Part_status[:], "1")
 		copy(mbr.Mbr_partition_3.Part_type[:], typee)
 		guardaMBR(mbr, path)
-		fmt.Println("SE CREO LA PARTICION " + name + " EN " + path + " CON EXITO")
+		//fmt.Println("SE CREO LA PARTICION " + name + " EN " + path + " CON EXITO")
+		respuesta += "\nSE CREO LA PARTICION " + name + " EN " + path + " CON EXITO"
 		return
 	}
 	if p4 {
@@ -315,7 +322,8 @@ func crear_particiones(mbr MBR, tam int, path string, name string, typee string,
 		copy(mbr.Mbr_partition_4.Part_status[:], "1")
 		copy(mbr.Mbr_partition_4.Part_type[:], typee)
 		guardaMBR(mbr, path)
-		fmt.Println("SE CREO LA PARTICION " + name + " EN " + path + " CON EXITO")
+		//fmt.Println("SE CREO LA PARTICION " + name + " EN " + path + " CON EXITO")
+		respuesta += "\nSE CREO LA PARTICION " + name + " EN " + path + " CON EXITO"
 		return
 	}
 }
@@ -369,7 +377,8 @@ func crear_logica(mbr MBR, tam int, path string, name string, typee string, fit 
 		sz = res2[0]
 
 	} else {
-		fmt.Println("ERROR FDISK: NO EXISTE PARTICION EXTENDIDA")
+		//fmt.Println("ERROR FDISK: NO EXISTE PARTICION EXTENDIDA")
+		respuesta += "\nERROR FDISK: NO EXISTE PARTICION EXTENDIDA"
 		return
 	}
 
@@ -401,16 +410,19 @@ func crear_logica(mbr MBR, tam int, path string, name string, typee string, fit 
 			// Lo guarda en el archivo
 			disco, err := os.OpenFile(string(path), os.O_RDWR, 0660) // Apertura del archivo
 			if err != nil {
-				fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO")
+				//fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO")
+				respuesta += "\nERROR: NO SE LOGRO ABRIR EL ARCHIVO"
 			}
 
 			disco.Seek(int64(sta), 0) // Se corre al inicio del ebr
 			//bf := new(bytes.Buffer)
 			binary.Write(disco, binary.BigEndian, ebr) // se convierte en arreglo de byte
 			disco.Close()
-			fmt.Println("SE CREO LA PARTICION LOGICA " + name + " CON EXITO")
+			//fmt.Println("SE CREO LA PARTICION LOGICA " + name + " CON EXITO")
+			respuesta += "\nSE CREO LA PARTICION LOGICA " + name + " CON EXITO"
 		} else {
-			fmt.Println("ERROR FDISK: NO HAY ESPACIO SUFICIENTE PARA CREAR PARTICION LOGICA ")
+			//fmt.Println("ERROR FDISK: NO HAY ESPACIO SUFICIENTE PARA CREAR PARTICION LOGICA ")
+			respuesta += "\nERROR FDISK: NO HAY ESPACIO SUFICIENTE PARA CREAR PARTICION LOGICA "
 		}
 	} else {
 		var inicio List
@@ -489,7 +501,8 @@ func crear_logica(mbr MBR, tam int, path string, name string, typee string, fit 
 				if rre != nil {
 					print(rre)
 				}
-				fmt.Println("SE CREO LA PARTICION LOGICA " + name + " CON EXITO")
+				//fmt.Println("SE CREO LA PARTICION LOGICA " + name + " CON EXITO")
+				respuesta += "\nSE CREO LA PARTICION LOGICA " + name + " CON EXITO"
 				disco.Close()
 			}
 		}
@@ -502,7 +515,8 @@ func guardaMBR(mbr MBR, path string) {
 	// -------------------------- GUARDA EL MBR
 	disco, err := os.OpenFile(string(path), os.O_RDWR, 0660) // Apertura del archivo
 	if err != nil {
-		fmt.Println("ERROR FDISK: NO SE LOGRO ABRIR EL ARCHIVO")
+		//fmt.Println("ERROR FDISK: NO SE LOGRO ABRIR EL ARCHIVO")
+		respuesta += "\nERROR FDISK: NO SE LOGRO ABRIR EL ARCHIVO"
 	}
 	disco.Seek(0, 0) // Posicion inicial
 	//bf := new(bytes.Buffer)

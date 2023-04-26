@@ -1,15 +1,14 @@
 package comandos
 
 import (
-	"fmt"
 	"os"
 )
 
 func rmdisk(path string) {
 	//verificar si el archivo existe
-	//fmt.Println("path: " + path)
 	if !archivoExiste(path) {
-		fmt.Println("ERROR: NO EXISTE LA RUTA")
+		//fmt.Println("ERROR: NO EXISTE LA RUTA")
+		respuesta += "\nERROR: NO EXISTE LA RUTA"
 		return
 	}
 	// confirmacion de eliminar
@@ -29,10 +28,12 @@ func rmdisk(path string) {
 	//remover sin confirmacion
 	err := os.Remove(path) // elimina el archivo
 	if err != nil {
-		fmt.Printf("ERROR AL ELIMINAR EL ARCHIVO %v\n", err)
+		//fmt.Printf("ERROR AL ELIMINAR EL ARCHIVO %v\n", err)
+		respuesta += "\nERROR AL ELIMINAR EL ARCHIVO (rmdisk)"
 		return
 	}
-	fmt.Println("SE ELIMINO EL DISCO: " + path)
+	//fmt.Println("SE ELIMINO EL DISCO: " + path)
+	respuesta += "\nSE ELIMINO EL DISCO: " + path
 }
 
 func archivoExiste(ruta string) bool {

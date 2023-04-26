@@ -2,7 +2,6 @@ package comandos
 
 import (
 	"encoding/binary"
-	"fmt"
 	"math/rand"
 	"os"
 	"strconv"
@@ -12,13 +11,10 @@ import (
 
 // ------------------------------MKDISK---------------------------------------------
 func mkdisk(path string, size int, fit string, unit string) {
-	//fmt.Println("path:" + path)
-	//fmt.Println("size:" + strconv.Itoa(size))
-	//fmt.Println("unit:" + unit)
-	//fmt.Println("fit:" + fit)
 	//se crea el disco
 	if size <= 0 {
-		fmt.Println("ERROR: size:" + strconv.Itoa(size) + " invalido")
+		//fmt.Println("ERROR MKDISK : size:" + strconv.Itoa(size) + " invalido")
+		respuesta += "\nERROR MKDISK: size:" + strconv.Itoa(size) + " invalido"
 		return
 	}
 	var tam int
@@ -79,12 +75,12 @@ func mkdisk(path string, size int, fit string, unit string) {
 	//Guarda el mbr
 	disco, err = os.OpenFile(string(path), os.O_RDWR, 0660) // Apertura del archivo
 	if err != nil {
-		fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO")
+		//fmt.Println("ERROR: NO SE LOGRO ABRIR EL ARCHIVO")
+		respuesta += "\nERROR MKDISK: NO SE LOGRO ABRIR EL ARCHIVO"
 	}
-
 	disco.Seek(0, 0)
 	binary.Write(disco, binary.BigEndian, mbr) // se convierte en arreglo de byte
 	disco.Close()
-	fmt.Println("SE CREO EL DISCO:  " + path)
-
+	//fmt.Println("SE CREO EL DISCO:  " + path)
+	respuesta += "\nSE CREO EL DISCO:  " + path
 }
