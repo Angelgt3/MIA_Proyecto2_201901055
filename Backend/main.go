@@ -15,7 +15,6 @@ func main() {
 	http.HandleFunc("/ejecutar", ejecutar)
 
 	//crea el servidor
-	fmt.Println("El servidor esta correindo en el puerto 3000")
 	fmt.Println("Run server: http://localhost:3000")
 	http.ListenAndServe("localhost:3000", nil)
 
@@ -67,6 +66,6 @@ func ejecutar(w http.ResponseWriter, r *http.Request) {
 }
 
 func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	//	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 	(*w).Header().Set("Access-Control-Allow-Headers", "Content-Type")
 }

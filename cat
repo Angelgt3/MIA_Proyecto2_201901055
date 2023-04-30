@@ -1,6 +1,11 @@
 sudo cp comandos -r  /usr/lib/go-1.18/src/
-go buld main.go
+go build main.go
 ./main
 
 sudo vim /etc/nginx/sites-enabled/fastapi_nginx
 :wq
+
+
+token
+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
+git clone https://github.com/Angelgt3/MIA_Proyecto2_201901055.git
