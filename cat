@@ -1,5 +1,5 @@
-sudo rm -r /usr/lib/go-1.18/src/
-sudo cp comandos -r /usr/lib/go-1.18/src/comandos
+sudo rm -r /usr/lib/go-1.18/src/comandos
+sudo cp comandos -r /usr/lib/go-1.18/src/
 go build main.go
 ./main
 
