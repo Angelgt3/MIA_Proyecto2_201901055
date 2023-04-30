@@ -26,7 +26,7 @@ type PETICION struct {
 }
 
 func ejecutar(w http.ResponseWriter, r *http.Request) {
-	//enableCors(&w)
+	enableCors(&w)
 	//leo el json que recibo
 	contenido, err := ioutil.ReadAll(r.Body)
 	if err != nil {

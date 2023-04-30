@@ -8,14 +8,18 @@ import (
 )
 
 // ------------------------------ANALIZADOR---------------------------------------------
-func Leer_archivo(nombreArchivo string) string {
-	//abrimos el archivo
-	fmt.Println("EJECUTANDO SCRIPT ... ")
-	bytesLeidos, err := ioutil.ReadFile(nombreArchivo)
+func Abir_archivo(ruta string) string {
+	bytesLeidos, err := ioutil.ReadFile(ruta)
 	if err != nil {
 		//fmt.Printf("Error leyendo archivo: %v", err)
 		respuesta += "ERROR: NO SE PUDO ABRIR EL ARCHIVO (analizador)"
 	}
+	return string(bytesLeidos)
+}
+
+func Leer_archivo(bytesLeidos string) string {
+	//abrimos el archivo
+	fmt.Println("EJECUTANDO SCRIPT ... ")
 	//convierto todo el texto en minusculas}
 	contenido := strings.ToLower(string(bytesLeidos))
 	//separa el contenido por lineas
