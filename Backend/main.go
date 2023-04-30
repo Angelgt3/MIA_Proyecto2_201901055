@@ -66,7 +66,10 @@ func ejecutar(w http.ResponseWriter, r *http.Request) {
 }
 
 func enableCors(w *http.ResponseWriter) {
-	//(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 	(*w).Header().Set("Access-Control-Allow-Headers", "*")
-	//(*w).Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	(*w).Header().Set("Access-Control-Allow-Method", "*")
+	(*w).Header().Set("Access-Control-Expose-Headers", "*")
+	(*w).Header().Set("Access-Control-Max-Age", "*")
+	(*w).Header().Set("Access-Control-Allow-Credentials", "*")
 }
