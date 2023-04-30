@@ -6,15 +6,20 @@ import { AppComponent } from './app.component';
 
 import { HttpClientModule } from '@angular/common/http';
 import { InicioComponent } from './inicio/inicio.component';
-
+import { LoginComponent } from './login/login.component';
+import { ComandosComponent } from './comandos/comandos.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatInputModule} from '@angular/material/input'; 
 import {MatIconModule} from '@angular/material/icon'; 
 import { FormsModule } from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+
 @NgModule({
   declarations: [
     AppComponent,
-    InicioComponent
+    InicioComponent,
+    LoginComponent,
+    ComandosComponent
   ],
   imports: [
     BrowserModule,
@@ -22,6 +27,7 @@ import { FormsModule } from '@angular/forms';
     HttpClientModule,
     BrowserAnimationsModule,
     MatInputModule,
+    MatButtonModule,
     MatIconModule,
     FormsModule
   ],

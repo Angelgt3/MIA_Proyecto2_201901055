@@ -1,0 +1,33 @@
+<!-- Panel - Inicial  -->
+<div id="panel_inicial">
+
+</div>
+<!-- Panel - Contenido  -->
+<div id="panel_contenido">
+    <div id="panel_opciones">
+        <!-- LOGIN - Formulario -->
+        <mat-form-field  class="form">
+            <mat-label>Ingrese el usuario</mat-label>
+            <input matInput type="text" [(ngModel)]="user">
+        </mat-form-field>
+        <mat-form-field class="form">
+            <mat-label>Ingrese la contraseña</mat-label>
+            <input matInput type="text" [(ngModel)]="pass">
+        </mat-form-field>
+        <mat-form-field class="form">
+            <mat-label>Ingrese el ID del disco</mat-label>
+            <input matInput type="text" [(ngModel)]="id">
+        </mat-form-field>
+        <!-- Boton - INGRESAR  -->
+        <button mat-fab extended color="primary" class="boton" (click)="compilar()">
+            <mat-icon class="logo_boton">play_arrow</mat-icon>
+            Ingresar
+        </button>
+        <!-- Boton - HOME  -->
+        <div id="boton_home">
+            <button mat-fab (click)="ir_inicio()">
+                <mat-icon>home</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>

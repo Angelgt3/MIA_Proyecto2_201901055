@@ -56,7 +56,7 @@ func ejecutar(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	resp := make(map[string]string)
 	resp["nombre"] = "201901055 - Angel"
-	fmt.Println(res)
+	//fmt.Println(res)
 	resp["result"] = res
 	jsonResp, err := json.Marshal(resp)
 	if err != nil {
@@ -66,7 +66,7 @@ func ejecutar(w http.ResponseWriter, r *http.Request) {
 }
 
 func enableCors(w *http.ResponseWriter) {
-	//(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 	(*w).Header().Set("Access-Control-Allow-Headers", "*")
 	//(*w).Header().Set("Access-Control-Allow-Headers", "Content-Type")
 }

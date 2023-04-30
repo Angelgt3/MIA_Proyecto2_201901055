@@ -2,6 +2,7 @@ package comandos
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -490,7 +491,9 @@ func buscarPath(id string) string {
 }
 
 func crear_dot(contenido string, path string) {
-
+	fmt.Println("----------------------------Dot------------------------------")
+	fmt.Println(contenido)
+	fmt.Println("----------------------------fin Dot------------------------------")
 	directorio := directorio(path)
 	name := nombre_archivo(path)
 	ruta := directorio + "/" + name + ".dot"

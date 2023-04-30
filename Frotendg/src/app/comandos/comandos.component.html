@@ -8,8 +8,8 @@
     <div id="panel_opciones">
         <!-- imput - Cargar archivo  -->
         <mat-form-field class="input_url">
-            <mat-label>Ingrese la url del archivo que se desea ejecutar</mat-label>
-            <input matInput type="text" [(ngModel)]="path">
+            <mat-label>Ingrese comnado que desea ejecutar</mat-label>
+            <input matInput type="text" [(ngModel)]="comand">
         </mat-form-field>
     </div>
     <!-- Boton - Cargar archivo  -->
@@ -20,18 +20,11 @@
     </div>
     <!-- Boton - LOGIN  -->
     <div id="boton_login">
-        <button mat-fab  class="boton_redondo" (click)="ir_login()">
+        <button mat-fab  class="boton_redondo_rojo" (click)="salir()">
             <mat-icon>face</mat-icon>
         </button>
     </div>
-    <!-- EDITOR -->
-    <div id="editor">
-        <textarea  name="description" rows="25" cols="80"  [(ngModel)]="code" > </textarea>
-    </div>
-    <!-- Consola -->
-    <div id="consola">
-        <textarea  name="description" rows="25" cols="80" >{{Resultados[0].result}}  </textarea>
-    </div>
+    
 </div>
 
 

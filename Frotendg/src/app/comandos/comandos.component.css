@@ -1,0 +1,77 @@
+/* Panel Inicial*/
+#panel_inicial{
+  background-color: rgba(81, 214, 170, 0.699);
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* Panel COntenido*/
+#panel_contenido{
+  position: absolute;
+  /*background-color: rebeccapurple;*/
+  display: block;
+  top: 8%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 80%;
+  height: 84%;
+
+}
+
+/* INPUT - Cargar archivo  */
+.input_url {
+  position: relative;
+  left: 0%;
+  width: 90%;
+  height: 120%;
+}
+
+#panel_opciones{
+  position: absolute;
+  /*background-color: green;*/
+  display: block;
+  top: 2%;
+  left: 0;
+  right: 0;
+  width: 77%;
+  height: 15%;
+}
+
+/* BOTON - Ejecutar  */
+#boton_cargar{
+  position: absolute;
+  top: 2%;
+  right: -5%;
+  width: 30%;
+  height: 10%;
+  /*background-color:blue;*/
+}
+.boton_redondo {
+  display: block;
+  top: 0;
+  left: 100;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: greenyellow;
+}
+.boton_redondo_rojo {
+  display: block;
+  top: 3%;
+  left: 100;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgb(252, 36, 36);
+}
+
+/* BOTON - Login  */
+#boton_login{
+  position: absolute;
+  top: 2%;
+  right: -15%;
+  width: 30%;
+  height: 10%;
+  /*background-color:blue;*/
+}
