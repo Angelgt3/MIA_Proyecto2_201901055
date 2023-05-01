@@ -14,24 +14,31 @@ export class LoginComponent {
   id: string = "";
   Resultados=[  
     {
-      nombre: "Archivo 1",
-      result: "Resultado 1"  
+      nombre: "",
+      result: "Resultado"  
     }
   ]
   compilar(){
-    console.log(this.user)
-    console.log(this.pass)
-    console.log(this.id)
+    
     var comando = "login >user="+this.user+" >pwd="+this.pass+" >id="+this.id
-    this.http.post('http://localhost:3000/login',{nombre:"login",texto:comando}).subscribe((response:any)=>{
+    //this.http.post('http://34.224.222.47/ejecutar',comando).subscribe((response:any)=>{
+    this.http.post('http://localhost:3000/ejecutar',comando).subscribe((response:any)=>{
       this.Resultados[0]=response
     });
     this.user=""
     this.pass=""
     this.id=""
+    console.log(this.Resultados[0].result)
+      this.router.navigate(['inicio']);  
   }
   
   ir_inicio(){
+    //Se deslogea tanbien
+    var comando = "logout"
+    //this.http.post('http://34.224.222.47/ejecutar',comando).subscribe((response:any)=>{
+    this.http.post('http://localhost:3000/ejecutar',comando).subscribe((response:any)=>{
+      this.Resultados[0]=response
+    });
     this.router.navigate(['inicio']);
   }
 }

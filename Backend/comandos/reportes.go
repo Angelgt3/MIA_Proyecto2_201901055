@@ -41,7 +41,7 @@ func Reporte_file(path string, ruta string, id string) {
 	contenido += "struct [ \n"
 	contenido += "label = "
 	contenido += "\""
-	contenido += nombre_archivo(ruta) + "|"
+	contenido += Nombre_archivo(ruta) + "|"
 	contenido += contenidoArchivo
 	contenido += "\""
 	contenido += "] \n"
@@ -494,8 +494,8 @@ func crear_dot(contenido string, path string) {
 	fmt.Println("----------------------------Dot------------------------------")
 	fmt.Println(contenido)
 	fmt.Println("----------------------------fin Dot------------------------------")
-	directorio := directorio(path)
-	name := nombre_archivo(path)
+	directorio := Directorio(path)
+	name := Nombre_archivo(path)
 	ruta := directorio + "/" + name + ".dot"
 	b := []byte(contenido)
 	err := ioutil.WriteFile(ruta, b, 0755)
@@ -509,7 +509,7 @@ func crear_dot(contenido string, path string) {
 }
 
 // retorna el directorio de un path
-func directorio(path string) string {
+func Directorio(path string) string {
 	ruta := strings.Split(path, "/")
 	carpets := ""
 	for i := 0; i < len(ruta)-1; i++ {
@@ -521,7 +521,7 @@ func directorio(path string) string {
 }
 
 // retorna el nombre del archivo
-func nombre_archivo(path string) string {
+func Nombre_archivo(path string) string {
 	ruta := strings.Split(path, "/")
 	nomext := ruta[len(ruta)-1]
 	sepNom := strings.Split(nomext, ".")
@@ -530,7 +530,7 @@ func nombre_archivo(path string) string {
 }
 
 // retorna la extension del archivo
-func extension(path string) string {
+func Extension(path string) string {
 	ruta := strings.Split(path, "/")
 	nomext := ruta[len(ruta)-1]
 	sepNom := strings.Split(nomext, ".")

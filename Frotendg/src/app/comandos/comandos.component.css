@@ -75,3 +75,11 @@
   height: 10%;
   /*background-color:blue;*/
 }
+
+#image_reporte{
+  position: absolute;
+  top: 25%;
+  width: 93%;
+  height: 75%;
+  background-color:blue;
+}

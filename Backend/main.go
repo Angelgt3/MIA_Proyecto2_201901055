@@ -13,6 +13,7 @@ func main() {
 
 	//routes
 	http.HandleFunc("/ejecutar", ejecutar)
+	//http.HandleFunc("/reporte_disk", r_disk)
 
 	//crea el servidor
 	fmt.Println("Run server: http://localhost:3000")
@@ -26,7 +27,7 @@ type PETICION struct {
 }
 
 func ejecutar(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	enableCors(&w) //permisos de cors
 	//leo el json que recibo
 	contenido, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -50,13 +51,12 @@ func ejecutar(w http.ResponseWriter, r *http.Request) {
 
 	//Analizar el archivo comandos texto
 	res := comandos.Leer_archivo(string(contenido))
-
+	//fmt.Println(res)
 	//Escribo el json para enviar
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
 	resp := make(map[string]string)
 	resp["nombre"] = "201901055 - Angel"
-	//fmt.Println(res)
 	resp["result"] = res
 	jsonResp, err := json.Marshal(resp)
 	if err != nil {
@@ -65,6 +65,23 @@ func ejecutar(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonResp)
 }
 
+/*
+	func r_disk(w http.ResponseWriter, r *http.Request) {
+		enableCors(&w)
+			contenido, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer r.Body.Close()
+
+		//comandos.Leer_archivo(string(contenido))
+		rutaImagen := filepath.Join("/", "disco.jpg")
+		w.Header().Set("Content-Type", mime.TypeByExtension(filepath.Ext(rutaImagen)))
+		fmt.Println(rutaImagen)
+		http.ServeFile(w, r, rutaImagen)
+		return
+	}
+*/
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 	(*w).Header().Set("Access-Control-Allow-Headers", "*")

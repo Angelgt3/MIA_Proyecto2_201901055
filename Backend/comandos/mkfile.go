@@ -52,8 +52,8 @@ func Mkfile(path string, r bool, siz string, cont string) {
 		}
 		contenido_archivo = contenido_archivo[0 : len(contenido_archivo)-1]
 	}
-	folderPath := directorio(path)
-	fileName := nombre_archivo(path) + "." + extension(path)
+	folderPath := Directorio(path)
+	fileName := Nombre_archivo(path) + "." + Extension(path)
 	// si existe el archivo
 	if existe_ruta(path, usuario_activo.Montada, 0) != -1 {
 		//fmt.Println("MKFILE: SE SOBREESCRIBIRA EL ARCHIVO")

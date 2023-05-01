@@ -25,7 +25,6 @@ func Leer_archivo(bytesLeidos string) string {
 	//separa el contenido por lineas
 	lineasComoArreglo := strings.Split(string(contenido), "\n")
 	var parametros [15]string
-	var tem string = ""
 	for _, nombre := range lineasComoArreglo {
 		if nombre != "" {
 			//separa comando y parametros
@@ -39,7 +38,7 @@ func Leer_archivo(bytesLeidos string) string {
 			ejecutar_script(parametros)
 		}
 	}
-	tem = respuesta
+	tem := respuesta
 	respuesta = ""
 	fmt.Println("SE TERMINO DE EJECUTAR EL SCRIPT :)")
 	return tem
@@ -314,10 +313,10 @@ func ejecutar_script(comando [15]string) {
 		}
 		Mkfile(path, r, size, cont)
 	} else if comando[0] == "pause" { //PAUSE-ANALIZADOR
-		/*
-			fmt.Println(" PAUSA: Presione cualguien tecla para continuar")
-			pause := ""
-			fmt.Scanln(&pause)
-		*/
+
+		fmt.Println(" PAUSA: Presione cualguien tecla para continuar")
+		pause := ""
+		fmt.Scanln(&pause)
+
 	}
 }
